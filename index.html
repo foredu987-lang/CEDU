@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>中區聯盟教甄 數學/教育科目 題庫 (近三年)</title>
+    <title>109年度中區聯盟國中教師甄試 - 題庫資料</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         body { font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
+        .explanation-box { transition: all 0.3s ease-in-out; }
         .answer-reveal {
             transition: all 0.3s ease-in-out;
             max-height: 0;
@@ -22,56 +24,42 @@
         }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 min-h-screen p-4 md:p-8">
+<body class="bg-gray-50 min-h-screen p-4 md:p-8">
 
-    <div class="max-w-4xl mx-auto">
-        <!-- 標題區 -->
-        <header class="bg-white rounded-xl shadow-sm p-6 mb-6 border-l-4 border-blue-600">
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">中區聯盟國中教甄題庫系統</h1>
-            <p class="text-gray-600">收錄近三年（110-112年度）教育專業科目與數學科考題，每個年度完整收錄 50 題，總計 150 題。</p>
+    <div class="max-w-5xl mx-auto">
+        <header class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-blue-800 mb-2">中區聯盟國中教師甄試 - 歷屆精選題庫</h1>
+            <p class="text-gray-600">包含 106 至 112 年度教育專業科目與數學科教材教法</p>
         </header>
 
-        <!-- 控制面板 -->
-        <div class="bg-white rounded-xl shadow-sm p-6 mb-6 flex flex-col md:flex-row gap-4 items-center justify-between">
-            <div class="flex flex-col sm:flex-row gap-4 items-center w-full md:w-auto">
-                <div class="flex items-center gap-2">
-                    <span class="font-semibold text-gray-700 whitespace-nowrap">排序方式：</span>
-                    <select id="sortSelect" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                        <option value="frequency">依出題頻率 (高頻優先)</option>
-                        <option value="year">依年份與題號 (最新優先)</option>
-                    </select>
-                </div>
-                
-                <div class="flex items-center gap-2 w-full sm:w-auto">
-                    <span class="font-semibold text-gray-700 whitespace-nowrap">分類篩選：</span>
-                    <select id="filterSelect" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                        <option value="all">全部顯示</option>
-                        <option value="教育法規">教育法規</option>
-                        <option value="教育心理學">教育心理學</option>
-                        <option value="數學教材教法">數學教材教法</option>
-                        <option value="教學與評量">教學與評量</option>
-                        <option value="教育社會學">教育社會學</option>
-                        <option value="課程發展">課程發展</option>
-                        <option value="班級經營">班級經營</option>
-                    </select>
-                </div>
+        <!-- 統計與篩選區 -->
+        <div class="bg-white p-4 rounded-xl shadow-sm mb-6 flex flex-wrap gap-4 items-center justify-between border border-gray-100">
+            <div class="text-sm text-gray-500">
+                共載入 <span id="total-count" class="font-bold text-blue-600">20</span> 題
             </div>
-            
-            <button id="expandAllBtn" class="bg-blue-100 text-blue-700 hover:bg-blue-200 px-4 py-2 rounded-lg font-medium transition-colors text-sm whitespace-nowrap">
-                展開全部解析
-            </button>
+            <div class="flex gap-2">
+                <button id="expand-all-btn" class="px-4 py-1.5 text-sm bg-blue-100 text-blue-700 rounded-full hover:bg-blue-200 transition font-bold">展開全部解析</button>
+                <button onclick="filterCategory('all')" class="px-4 py-1.5 text-sm bg-blue-100 text-blue-700 rounded-full hover:bg-blue-200 transition">全部</button>
+                <button onclick="filterCategory('數學教材教法')" class="px-4 py-1.5 text-sm bg-indigo-100 text-indigo-700 rounded-full hover:bg-indigo-200 transition">數學教材教法</button>
+                <button onclick="filterCategory('教育心理學')" class="px-4 py-1.5 text-sm bg-emerald-100 text-emerald-700 rounded-full hover:bg-emerald-200 transition">教育心理學</button>
+                <button onclick="filterCategory('課程與教學')" class="px-4 py-1.5 text-sm bg-orange-100 text-orange-700 rounded-full hover:bg-orange-200 transition">課程與教學</button>
+            </div>
         </div>
 
         <!-- 題庫列表 -->
-        <div id="questionContainer" class="space-y-6">
-            <!-- 題目卡片將由 JavaScript 動態生成 -->
+        <div id="questions-container" class="space-y-6">
+            <!-- JavaScript 將動態生成題目內容 -->
         </div>
     </div>
 
-    <script>
-        // 題庫資料 (近三年 110-112)
-        // frequencyValue: 3=高, 2=中, 1=低 (用於排序邏輯)
-        const questionsData = [
+<script>
+/**
+ * 這是您要求的 JavaScript 物件陣列格式資料
+ * 包含 id, year, no, category, frequencyLabel, frequencyValue, question, options, answer, explanation
+ */
+
+/*const questionsData = [ */
+const questionsData = [
             {
                 id: 11201,
                 year: 112,
@@ -1869,130 +1857,3482 @@
                 frequencyValue: 3,
                 question: '在布魯姆(Bloom)的認知領域教學目標修訂版中，將知識向度分為四類：事實性知識、概念性知識、程序性知識，以及下列何者？',
                 options: ['(A) 理論性知識', '(B) 實用性知識', '(C) 後設認知知識 (Metacognitive Knowledge)', '(D) 道德性知識'],
-                answer: 'C',
-                explanation: 'Anderson 修訂版將知識向度擴充為四類：事實性(基本元素)、概念性(結構與關係)、程序性(如何做)、以及後設認知知識(對自身認知的覺察與策略運用)。'
-            }
-        ];
+            answer: 'C',
+            explanation: 'Anderson 修訂版將知識向度擴充為四類：事實性(基本元素)、概念性(結構與關係)、程序性(如何做)、以及後設認知知識(對自身認知的覺察與策略運用)。'
+        },
+        {
+            id: "109-01",
+            year: "109",
+            no: 1,
+        year: "109",
+        no: 1,
+        category: "教育心理學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "根據皮亞傑(J. Piaget)的認知發展論，國中一年級學生（約12-13歲）的認知發展主要開始進入哪一個階段？",
+        options: ["(A) 感覺動作期", "(B) 前運思期", "(C) 具體運思期", "(D) 形式運思期"],
+        answer: "D",
+        explanation: "國一學生年紀約為 12~13 歲。根據皮亞傑理論，11 歲以上個體開始發展抽象邏輯思考、假設演繹推論等能力，此階段稱為「形式運思期」。"
+    },
+    {
+        id: "109-02",
+        year: "109",
+        no: 2,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "在教授國中數學「負數的乘法」時，下列何種情境最適合用來解釋「負負得正」的概念？",
+        options: ["(A) 水庫水位的升降", "(B) 欠債與還款的紀錄", "(C) 向東向西走的速度與時間倒轉", "(D) 氣溫的升降變化"],
+        answer: "C",
+        explanation: "「負負得正」較難以生活常見的靜態數量直接說明。以「速度×時間＝距離」模型來看：規定向東為正、向西為負（速度）；未來為正、過去為負（時間）。如果某人以向西的速度（-）行走，問他過去的時間（-）在哪裡？他一定在更東邊（+）。這是最能具象化說明負負得正的數學情境。"
+    },
+    {
+        id: "109-03",
+        year: "109",
+        no: 3,
+        category: "教育哲學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "杜威(J. Dewey)的實用主義強調「教育即生活」，下列哪一項敘述最符合其教育主張？",
+        options: [
+            "(A) 學校應提供與真實社會隔絕的純粹學術環境",
+            "(B) 課程設計應以學科的系統邏輯為絕對中心",
+            "(C) 學習應從做中學(Learning by doing)，與經驗結合",
+            "(D) 教師是課堂的絕對權威與知識傳授者"
+        ],
+        answer: "C",
+        explanation: "杜威主張「教育即生活、教育即生長、教育即經驗的重組與改造」，提倡「從做中學」(Learning by doing)，強調學生的主體性與實際經驗的結合。"
+    },
+    {
+        id: "109-04",
+        year: "109",
+        no: 4,
+        category: "課程與教學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "依據十二年國民基本教育課程綱要（108課綱），下列何者不屬於「核心素養」的三大面向？",
+        options: [
+            "(A) 自主行動",
+            "(B) 溝通互動",
+            "(C) 社會參與",
+            "(D) 終身學習"
+        ],
+        answer: "D",
+        explanation: "108課綱的願景為「成就每一個孩子：適性揚才、終身學習」，而核心素養的「三大面向」為：自主行動、溝通互動、社會參與。「終身學習」是願景與最終目標，而非三大面向之一。"
+    },
+    {
+        id: "109-05",
+        year: "109",
+        no: 5,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "國中幾何教學中，依據范希爾(van Hiele)的幾何思考層次理論，當學生能夠理解「正方形具備長方形所有的性質，所以正方形是長方形的一種特例」時，此學生達到哪一個層次？",
+        options: [
+            "(A) 視覺期 (Level 0)",
+            "(B) 分析期 (Level 1)",
+            "(C) 關係期/非形式演繹期 (Level 2)",
+            "(D) 形式演繹期 (Level 3)"
+        ],
+        answer: "C",
+        explanation: "范希爾幾何層次中，關係期(Level 2，有些學者定義為第3層次)的特徵是：學生能理解圖形之間的包含關係（如正方形是長方形的一種），並能建立性質間的邏輯關聯。"
+    },
+    {
+        id: "109-06",
+        year: "109",
+        no: 6,
+        category: "教育行政與法規",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "依據現行《教師法》之規定，高級中等以下學校教師之聘任程序，下列何者敘述正確？",
+        options: [
+            "(A) 由校長直接遴選後聘任",
+            "(B) 經家長委員會面試通過後由校長聘任",
+            "(C) 經教師評審委員會審查通過後，由校長聘任",
+            "(D) 由地方政府教育局統一指派分發"
+        ],
+        answer: "C",
+        explanation: "依《教師法》規定，高級中等以下學校教師之聘任，除依法令分發者外，應經教師評審委員會(教評會)審查通過後，由校長聘任之。"
+    },
+    {
+        id: "109-07",
+        year: "109",
+        no: 7,
+        category: "教育測驗與評量",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "在一次國中數學段考中，某一選擇題的難度指數(P值)為 0.85，鑑別度指數(D值)為 0.15。針對該試題的評估，下列何者最為適切？",
+        options: [
+            "(A) 題目偏難，鑑別度優良",
+            "(B) 題目偏易，鑑別度不佳",
+            "(C) 題目難度適中，鑑別度優良",
+            "(D) 題目偏難，鑑別度不佳"
+        ],
+        answer: "B",
+        explanation: "難度指數 P 值界於 0~1 之間，數值越大代表答對人數越多，題目越「容易」(P=0.85 屬偏易)。鑑別度指數 D 值通常要求在 0.25 以上才算合格，D=0.15 代表鑑別度低（無法區分高低分組）。因此該題偏易且鑑別度不佳。"
+    },
+    {
+        id: "109-08",
+        year: "109",
+        no: 8,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "在引導國中生解一元一次方程式「3x + 5 = 11」時，教師常使用「等量公理」進行教學。下列哪一個生活情境或教具最適合用來具象化「等量公理」？",
+        options: [
+            "(A) 兩個速度相同的跑者",
+            "(B) 兩端保持平衡的天平",
+            "(C) 銀行存款的複利計算",
+            "(D) 撲克牌的洗牌與發牌過程"
+        ],
+        answer: "B",
+        explanation: "「等量公理」的核心概念是「等式兩邊同加、同減、同乘或同除以一不為零的數，等式依然成立」。這與「天平」兩端同時增加或減少相同重量，天平仍保持平衡的物理現象完全一致，是最佳的具象化教具。"
+    },
+    {
+        id: "109-09",
+        year: "109",
+        no: 9,
+        category: "教育心理學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "班杜拉(A. Bandura)提出的社會學習論中，個體對於自己是否有能力成功執行某一特定任務或達成目標的信念，稱之為何？",
+        options: [
+            "(A) 自我概念 (Self-concept)",
+            "(B) 自我效能 (Self-efficacy)",
+            "(C) 自我實現 (Self-actualization)",
+            "(D) 自我價值 (Self-worth)"
+        ],
+        answer: "B",
+        explanation: "自我效能(Self-efficacy)由班杜拉提出，指個人對自己是否具有能力去完成某項特定任務的客觀評估與信心。這對學生的學習動機與面對挑戰的態度有極大的影響。"
+    },
+    {
+        id: "109-10",
+        year: "109",
+        no: 10,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "學生在計算分數加法 1/2 + 1/3 時，常出現「(1+1) / (2+3) = 2/5」的錯誤。這種錯誤最可能是因為學生具有下列哪一種迷思概念？",
+        options: [
+            "(A) 未能理解分數的等值擴分概念",
+            "(B) 將分子與分母視為兩個獨立的整數進行運算",
+            "(C) 搞混了分數乘法與加法的運算規則",
+            "(D) 對於假分數與帶分數的轉換不熟悉"
+        ],
+        answer: "B",
+        explanation: "這是一種常見的分數迷思概念，稱為「整數偏誤」(whole number bias)。學生未將分數視為一個代表整體比例的單一數值，而是將分子和分母當作各自獨立的整數，直接套用整數加法的規則進行計算。"
+    },
+    {
+        id: "109-11",
+        year: "109",
+        no: 11,
+        category: "課程與教學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "教師在教學過程中，為了隨時了解學生目前的學習進展，並據以提供回饋或即時調整教學策略，所進行的評量稱為什麼？",
+        options: [
+            "(A) 安置性評量 (Placement Assessment)",
+            "(B) 總結性評量 (Summative Assessment)",
+            "(C) 形成性評量 (Formative Assessment)",
+            "(D) 診斷性評量 (Diagnostic Assessment)"
+        ],
+        answer: "C",
+        explanation: "形成性評量發生於教學活動進行中，目的在發現學生學習的優缺點，提供即時回饋，並協助教師隨時調整教學進度與方法。"
+    },
+    {
+        id: "109-12",
+        year: "109",
+        no: 12,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "國中數學教授資料集中趨勢時，若班上某次數學小考成績多數在 70~80 分之間，但有一位學生考了 5 分（極端值）。教師應引導學生了解，此時哪一種統計量較能代表全班的一般表現？",
+        options: [
+            "(A) 算術平均數",
+            "(B) 中位數",
+            "(C) 全距",
+            "(D) 標準差"
+        ],
+        answer: "B",
+        explanation: "算術平均數容易受到極端值(Outlier)的拉抬或拉低。當資料中存在極端的低分或高分時，中位數（將資料排序後居於正中間的數值）較具穩健性，更能代表多數人的真實水準。"
+    },
+    {
+        id: "109-13",
+        year: "109",
+        no: 13,
+        category: "教育社會學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "提出「文化資本」(Cultural Capital)概念，認為學校教育的課程與評量標準常反映中產階級的文化，進而複製了社會階級不平等的社會學者是誰？",
+        options: [
+            "(A) 涂爾幹 (E. Durkheim)",
+            "(B) 韋伯 (M. Weber)",
+            "(C) 柏森斯 (T. Parsons)",
+            "(D) 布迪爾 (P. Bourdieu)"
+        ],
+        answer: "D",
+        explanation: "法國社會學家布迪爾(Bourdieu)提出文化資本理論。他認為優勢階級的孩童在家庭中已習得學校認可的語言、舉止、品味（即文化資本），因此在學校教育中佔據優勢，促成了階級的社會再製。"
+    },
+    {
+        id: "109-14",
+        year: "109",
+        no: 14,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "在教授「機率」單元時，教師請學生投擲圖釘或瓶蓋 100 次，並記錄其尖端朝上的次數，藉此計算出朝上的比率。此種機率的引入方式屬於下列何種概念？",
+        options: [
+            "(A) 古典機率 (拉普拉斯機率)",
+            "(B) 經驗機率 (客觀機率/頻率機率)",
+            "(C) 主觀機率",
+            "(D) 幾何機率"
+        ],
+        answer: "B",
+        explanation: "經驗機率(Empirical probability)是透過大量重複試驗，以某事件發生的相對次數（頻率）來逼近該事件發生的機率。相對於古典機率要求「樣本空間結果發生機會均等」，圖釘朝上與朝下機會不均等，只能用經驗機率求得。"
+    },
+    {
+        id: "109-15",
+        year: "109",
+        no: 15,
+        category: "教育哲學",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "存在主義(Existentialism)應用於教育上，最可能強調下列哪一項原則？",
+        options: [
+            "(A) 重視古代經典名著的客觀研讀",
+            "(B) 培養學生無條件服從社會規範",
+            "(C) 協助學生探索自我，並為自己的選擇承擔責任",
+            "(D) 透過編序教學法強化行為制約"
+        ],
+        answer: "C",
+        explanation: "存在主義強調「存在先於本質」，人有自由意志去選擇並塑造自己的生命意義。在教育上主張尊重學生的主觀性個體性，幫助學生自我實現、面對選擇並負起責任。"
+    },
+    {
+        id: "109-16",
+        year: "109",
+        no: 16,
+        category: "班級經營",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "當班上學生為了吸引教師注意而故意發出怪聲干擾教學時，教師決定運用行為學派中的「消弱」(Extinction) 策略。其具體作法應為何？",
+        options: [
+            "(A) 立即給予嚴厲的口頭責備",
+            "(B) 忽視該行為，完全不予理會，剝奪其尋求注意的增強物",
+            "(C) 讓該學生離開教室去學務處罰站",
+            "(D) 扣減該學生當天的平時表現分數"
+        ],
+        answer: "B",
+        explanation: "「消弱」是指對於個體先前曾被增強的行為，停止給予增強物（此例中增強物為教師與同學的「注意」），使得該偏差行為發生的頻率逐漸降低甚至消失。"
+    },
+    {
+        id: "109-17",
+        year: "109",
+        no: 17,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "國中生在學習函數概念 y = f(x) 時，常誤以為「一個 x 只能對應一個 y，所以反過來一個 y 也只能對應一個 x（如 y=x² 不被認為是函數）」。此迷思概念顯示學生將函數概念與下列何者混淆？",
+        options: [
+            "(A) 多對一關係",
+            "(B) 一對一對應 (One-to-one correspondence)",
+            "(C) 線型函數",
+            "(D) 常數函數"
+        ],
+        answer: "B",
+        explanation: "函數的定義為「給定一個自變數 x，恰有一個應變數 y 與之對應」(可以是一對一或多對一)。學生誤以為每個 y 只能被一個 x 對應，是將一般函數與嚴格的「一對一函數」或「一對一對應關係」混淆了。"
+    },
+    {
+        id: "109-18",
+        year: "109",
+        no: 18,
+        category: "課程與教學",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "在合作學習中，實施「拼圖法第二代」(Jigsaw II)的步驟包含：(甲)專家小組討論；(乙)全班異質分組與分配教材；(丙)個人小考與小組表揚；(丁)回原小組教導同儕。其正確的實施順序應為何？",
+        options: [
+            "(A) 乙→甲→丁→丙",
+            "(B) 乙→丁→甲→丙",
+            "(C) 甲→乙→丁→丙",
+            "(D) 甲→丁→乙→丙"
+        ],
+        answer: "A",
+        explanation: "Jigsaw II 的實施步驟為：先進行異質分組並發放學習材料(乙)；接著各組負責同一主題的成員組成專家小組進行深入討論(甲)；討論完畢後，回到原來的異質小組將自己負責的部分教給組員(丁)；最後進行小測驗，並計算小組進步分數進行表揚(丙)。"
+    },
+    {
+        id: "109-19",
+        year: "109",
+        no: 19,
+        category: "特殊教育",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "依據我國《特殊教育法》與相關實施辦法，將身心障礙學生安置在普通班級中學習，並依其特殊需求，提供部分時間離開普通教室接受特殊教育服務的安置型態稱為何？",
+        options: [
+            "(A) 集中式特教班",
+            "(B) 分散式資源班",
+            "(C) 巡迴輔導",
+            "(D) 融合教育學校"
+        ],
+        answer: "B",
+        explanation: "資源班（分散式資源班）的學生學籍在普通班，大部分時間在普通班上課，但會依照個別化教育計畫(IEP)，抽出部分時間到資源班接受特殊教育與相關服務的輔導。"
+    },
+    {
+        id: "109-20",
+        year: "109",
+        no: 20,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "在 108 課綱的素養導向數學教學中，教師設計了一個「規畫國中畢業旅行預算與路線」的任務，要求學生運用比例、時間計算與資料解讀來完成。此設計主要體現了素養導向教學的哪一個核心理念？",
+        options: [
+            "(A) 強化機械式運算的熟練度與速度",
+            "(B) 重視數學發展的歷史軌跡",
+            "(C) 連結真實生活情境，培養解決問題的能力",
+            "(D) 提升抽象幾何證明與邏輯推理的嚴密性"
+        ],
+        answer: "C",
+        explanation: "素養導向教學強調知識的實用性與跨域整合性。「規畫畢業旅行」將數學知識（比例、數據分析）直接應用於學生有感的真實生活情境中，充分展現「結合生活情境解決問題」的核心精神。"
+    },
+    {
+        id: "109-21",
+        year: "109",
+        no: 21,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "數學課進行證明題教學時，教師引導學生：「若要證明 √2 為無理數，我們可以先假設 √2 為有理數，進而推導出與已知公理或假設矛盾的結果，藉此證明原敘述成立。」此種證明方法稱為何？",
+        options: [
+            "(A) 演繹法 (Deductive reasoning)",
+            "(B) 歸納法 (Inductive reasoning)",
+            "(C) 反證法 (Proof by contradiction)",
+            "(D) 窮舉法 (Proof by exhaustion)"
+        ],
+        answer: "C",
+        explanation: "反證法是一種間接證明法。先假設原命題的結論不成立，然後經過一連串的邏輯推演，得到與已知事實或假設相矛盾的結果，從而證明原命題必須成立。"
+    },
+    {
+        id: "109-22",
+        year: "109",
+        no: 22,
+        category: "教育心理學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "維高斯基(L. Vygotsky)提出的「近側發展區」(ZPD)，其具體涵義為何？",
+        options: [
+            "(A) 學生在完全沒有協助下能獨立解決問題的表現",
+            "(B) 學生目前獨立解決問題的能力，與經由成人或能力較佳同儕協助後所能達到能力之間的差距",
+            "(C) 教師移除學習鷹架(Scaffolding)後，學生的認知發展退化的程度",
+            "(D) 學生在感覺動作期的極限與前運思期的起點"
+        ],
+        answer: "B",
+        explanation: "近側發展區(Zone of Proximal Development)是指兒童現有的實際發展水準，與在成人引導或能力較強同儕合作下所能達到的潛在發展水準之間的距離。"
+    },
+    {
+        id: "109-23",
+        year: "109",
+        no: 23,
+        category: "課程與教學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "泰勒(R. Tyler)提出著名的課程設計直線型模式(目標模式)，其設計步驟的第一步為何？",
+        options: [
+            "(A) 組織學習經驗",
+            "(B) 選擇學習經驗",
+            "(C) 決定教育目標",
+            "(D) 評鑑學習經驗"
+        ],
+        answer: "C",
+        explanation: "泰勒的目標模式步驟依序為：1.決定教育目標(最重要且為首要步驟)；2.選擇學習經驗；3.組織學習經驗；4.評鑑學習經驗。"
+    },
+    {
+        id: "109-24",
+        year: "109",
+        no: 24,
+        category: "教育心理學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "教師若對某位學生抱持高度的期望，該學生便容易朝著教師期望的方向發展，成績與表現顯著提升。此現象在心理學上稱為何？",
+        options: [
+            "(A) 霍桑效應 (Hawthorne effect)",
+            "(B) 比馬龍效應/自我應驗預言 (Pygmalion effect)",
+            "(C) 破窗效應 (Broken windows theory)",
+            "(D) 月暈效應 (Halo effect)"
+        ],
+        answer: "B",
+        explanation: "比馬龍效應(或稱羅森塔爾效應、自我應驗預言)是指教師對學生的期望會影響學生的自我概念，進而促使學生展現出符合教師期望的行為。"
+    },
+    {
+        id: "109-25",
+        year: "109",
+        no: 25,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "國中數學幾何單元中，學生常錯誤地認為「兩個周長相等的長方形，其面積必定相等」。此現象顯示學生具備下列何種迷思概念？",
+        options: [
+            "(A) 長度與面積的守恆概念混淆",
+            "(B) 全等圖形與相似圖形的屬性混淆",
+            "(C) 面積疊合的迷思",
+            "(D) 比例尺的誤用"
+        ],
+        answer: "A",
+        explanation: "學生將「周長(一維長度)守恆」等同於「面積(二維空間)守恆」。例如周長同為 20 的長方形，邊長可以是 9和1(面積9)，也可以是 5和5(面積25)，周長相等不代表面積相等。"
+    },
+    {
+        id: "109-26",
+        year: "109",
+        no: 26,
+        category: "輔導與諮商",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "艾里斯(A. Ellis)創立的「理情行為治療法」(REBT)中，強調個體的情緒困擾並非直接由事件引起，而是來自對事件的看法。在 ABCDE 理論模式中，「B」代表什麼？",
+        options: [
+            "(A) 促發事件 (Activating event)",
+            "(B) 信念系統 (Belief system)",
+            "(C) 情緒結果 (Consequence)",
+            "(D) 駁斥不合理信念 (Dispute)"
+        ],
+        answer: "B",
+        explanation: "REBT的ABCDE模式：A為促發事件，B為個人的信念(包含非理性信念)，C為情緒或行為結果，D為駁斥非理性信念，E為治療後帶來的新效果(Effect)。"
+    },
+    {
+        id: "109-27",
+        year: "109",
+        no: 27,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "國中統計單元所教授的「盒狀圖」(Box Plot)，主要是透過五個統計量來呈現資料的分佈情形。下列何者『不』包含在這五個統計量之中？",
+        options: [
+            "(A) 最小值與最大值",
+            "(B) 第1四分位數(Q1)與第3四分位數(Q3)",
+            "(C) 中位數(Q2)",
+            "(D) 算術平均數"
+        ],
+        answer: "D",
+        explanation: "盒狀圖的五數總結包含：最小值、第一四分位數(Q1)、中位數(Q2)、第三四分位數(Q3)、最大值。算術平均數並非繪製盒狀圖的必要元素(有時會以十字標記，但非構成盒狀圖的五個標準端點)。"
+    },
+    {
+        id: "109-28",
+        year: "109",
+        no: 28,
+        category: "教育行政與法規",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "近年教育界提倡學校領導不應只集中在校長一人身上，而應視為一種組織層次的能力，由行政人員、教師、甚至家長共同參與、分擔領導職責。此種領導理念稱為何？",
+        options: [
+            "(A) 轉型領導 (Transformational leadership)",
+            "(B) 交易領導 (Transactional leadership)",
+            "(C) 分散式領導 (Distributed leadership)",
+            "(D) 道德領導 (Moral leadership)"
+        ],
+        answer: "C",
+        explanation: "分散式領導強調領導實務分佈在組織中不同成員之間，領導不再是單一職位者的特權，而是成員間互動的過程與集體行動。"
+    },
+    {
+        id: "109-29",
+        year: "109",
+        no: 29,
+        category: "教育測驗與評量",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "關於測驗的「信度」(Reliability)與「效度」(Validity)之關係，下列敘述何者正確？",
+        options: [
+            "(A) 信度高的測驗，其效度一定也高",
+            "(B) 效度高的測驗，其信度一定也高",
+            "(C) 信度與效度各自獨立，毫無關聯",
+            "(D) 信度是效度的充分條件"
+        ],
+        answer: "B",
+        explanation: "信度是效度的「必要非充分條件」。一個測驗若有效度（能準確測出想測的特質），它一定穩定（有信度）；但測驗很穩定（信度高），不代表它測到了我們想測的東西（效度不一定高）。"
+    },
+    {
+        id: "109-30",
+        year: "109",
+        no: 30,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "學生在解一元二次方程式 x² - 6x + 5 = 0 時，欲使用「配方法」。為了將方程式左邊配成完全平方式，等式兩邊應該要同加上多少？",
+        options: [
+            "(A) 36",
+            "(B) -6",
+            "(C) 9",
+            "(D) -3"
+        ],
+        answer: "C",
+        explanation: "配方法的關鍵在於加上「一次項係數一半的平方」。此題一次項係數為 -6，一半為 -3，平方後為 9。即 (x² - 6x + 9) = -5 + 9，進而配成 (x - 3)² = 4。"
+    },
+    {
+        id: "109-31",
+        year: "109",
+        no: 31,
+        category: "班級經營",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "庫寧(J. Kounin)提出的班級經營概念中，指出教師必須具備「背後長眼睛」的能力，能隨時洞察教室內每個角落發生的事情，及時制止不良行為的發生。此概念稱之為？",
+        options: [
+            "(A) 漣漪效應 (Ripple effect)",
+            "(B) 掌握全局 (Withitness)",
+            "(C) 動態管理 (Momentum)",
+            "(D) 順暢過渡 (Smoothness)"
+        ],
+        answer: "B",
+        explanation: "「掌握全局」(Withitness)是指教師能對教室內發生的所有狀況保持敏銳的覺察力，讓學生感覺老師隨時都在注意他們，從而減少違規行為。"
+    },
+    {
+        id: "109-32",
+        year: "109",
+        no: 32,
+        category: "教育哲學",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "認為教育的目的是引導學生認識跨越時代、永恆不變的真理，且特別重視博雅教育(Liberal arts)與西方經典名著閱讀的教育哲學流派為？",
+        options: [
+            "(A) 進步主義 (Progressivism)",
+            "(B) 精粹主義 (Essentialism)",
+            "(C) 永恆主義 (Perennialism)",
+            "(D) 重建主義 (Reconstructionism)"
+        ],
+        answer: "C",
+        explanation: "永恆主義代表人物如赫欽斯(R. Hutchins)。他們主張人性不變、真理永恆，反對過度強調實用與變動的進步主義，強調經典著作(Great Books)的學習。"
+    },
+    {
+        id: "109-33",
+        year: "109",
+        no: 33,
+        category: "特殊教育",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "針對班上患有「注意力缺陷過動症」(ADHD)學生的經營策略，下列何者較『不』適當？",
+        options: [
+            "(A) 將其座位安排在靠近老師或遠離門窗等容易分心的位置",
+            "(B) 為了訓練其耐心，刻意給予冗長且複雜的多步驟指令",
+            "(C) 提供明確的教室規範與具體的結構化作息表",
+            "(D) 運用代幣制度或立即性的增強，鼓勵其表現出專注的行為"
+        ],
+        answer: "B",
+        explanation: "ADHD學生在短期記憶與持續專注力上有困難，給予冗長複雜的指令容易讓他們受挫或遺漏訊息。教師應將指令簡化、具體化，並分步驟交代。"
+    },
+    {
+        id: "109-34",
+        year: "109",
+        no: 34,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "在數學機率教學中，學生常有一種直覺：認為「丟擲一枚公正硬幣四次，出現『正反反正』的機率，會大於『正正正正』的機率」，因為前者看起來更「隨機」。這反映了學生的何種認知偏誤？",
+        options: [
+            "(A) 易得性捷思 (Availability heuristic)",
+            "(B) 代表性捷思 (Representativeness heuristic)",
+            "(C) 定錨效應 (Anchoring effect)",
+            "(D) 後見之明偏誤 (Hindsight bias)"
+        ],
+        answer: "B",
+        explanation: "代表性捷思是指人們傾向以「樣本是否看起來符合母體特徵(如隨機性)」來判斷機率。雖然每一種特定排列(如正反反正與正正正正)出現的理論機率皆為 1/16，但學生認為前者更具代表性而誤認機率較高。"
+    },
+    {
+        id: "109-35",
+        year: "109",
+        no: 35,
+        category: "課程與教學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "學生在學校日常生活中，透過學校制度、師生互動或校園氛圍，潛移默化學習到未明文規定於課表中的價值觀與規範（例如排隊守秩序、服從權威）。這屬於下列何種課程類型？",
+        options: [
+            "(A) 懸缺課程 (Null curriculum)",
+            "(B) 正式課程 (Formal curriculum)",
+            "(C) 非正式課程 (Informal curriculum)",
+            "(D) 潛在課程 (Hidden curriculum)"
+        ],
+        answer: "D",
+        explanation: "潛在課程(由傑克森 P. Jackson 提出)是指學校環境中非預期的、非正式的學習經驗，對學生的態度、價值觀有深遠的潛在影響。"
+    },
+    {
+        id: "109-36",
+        year: "109",
+        no: 36,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "國中生在學習「成反比」關係 (xy=k，k≠0) 時，常將其與「成正比」混淆。下列哪一個生活情境最適合用來引入「反比」的概念？",
+        options: [
+            "(A) 購買相同單價的筆，總花費與購買數量的關係",
+            "(B) 行駛固定的距離，車速與所花費時間的關係",
+            "(C) 圓的面積與其半徑平方的關係",
+            "(D) 正方形的周長與其邊長的關係"
+        ],
+        answer: "B",
+        explanation: "反比的定義是兩變數相乘為非零常數(xy=k)。「距離＝速度×時間」，當距離(常數k)固定時，速度(x)與時間(y)的乘積不變，兩者即成反比關係。A、C、D皆為正比關係。"
+    },
+    {
+        id: "109-37",
+        year: "109",
+        no: 37,
+        category: "教育心理學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "依據艾瑞克森(E. Erikson)的心理社會發展論，國中階段（約12-18歲的青少年期）學生所面臨的主要發展任務與危機為何？",
+        options: [
+            "(A) 信任 對 不信任",
+            "(B) 勤奮進取 對 自卑",
+            "(C) 自我認同 對 角色混淆",
+            "(D) 親密 對 孤立"
+        ],
+        answer: "C",
+        explanation: "青少年期的主要發展任務是追尋「我是誰？」、「我未來的方向為何？」，若能順利整合自我概念則獲得自我認同(Identity)，反之則會產生角色混淆(Role confusion)。"
+    },
+    {
+        id: "109-38",
+        year: "109",
+        no: 38,
+        category: "教育社會學",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "英國社會學家伯恩斯坦(B. Bernstein)將語言類型分為「限制型符碼」(Restricted code)與「精緻型符碼」(Elaborated code)。關於此理論，下列敘述何者正確？",
+        options: [
+            "(A) 勞工階級子女較常在家庭中使用精緻型符碼",
+            "(B) 學校教育的語言習慣通常偏向限制型符碼",
+            "(C) 中產階級子女較能熟練轉換與使用精緻型符碼",
+            "(D) 兩種符碼的差異主要來自個體的基因遺傳智力"
+        ],
+        answer: "C",
+        explanation: "伯恩斯坦認為，中產階級家庭常使用語法複雜、邏輯清晰的「精緻型符碼」；而勞工階級多使用依賴情境、語法簡單的「限制型符碼」。由於學校教育偏向精緻型符碼，中產階級子女因此在學業上較具優勢。"
+    },
+    {
+        id: "109-39",
+        year: "109",
+        no: 39,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "在數學課堂中，教師要求學生在解完一道複雜應用題後，「寫下你思考這道題目的步驟，以及遇到困難時你是如何轉換策略克服的」。此種評量方式最主要在培養與評量學生的何種能力？",
+        options: [
+            "(A) 後設認知能力 (Metacognition)",
+            "(B) 機械式運算能力",
+            "(C) 空間圖形識別能力",
+            "(D) 抽象代數運算能力"
+        ],
+        answer: "A",
+        explanation: "後設認知(Metacognition)是指「對自己認知歷程的認知」，包含自我監控、自我反省與策略調整。要求學生回顧與反思自己的解題思考歷程，正是訓練後設認知的有效方法。"
+    },
+    {
+        id: "109-40",
+        year: "109",
+        no: 40,
+        category: "課程與教學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "依據 108 課綱的規定，學校可依據其願景與特色，自行發展與規劃的課程稱為「校訂課程」。在國中階段，下列何者屬於校訂課程的範疇？",
+        options: [
+            "(A) 國語文與英語文領域課程",
+            "(B) 彈性學習課程",
+            "(C) 數學與自然科學領域課程",
+            "(D) 綜合活動與藝術領域課程"
+        ],
+        answer: "B",
+        explanation: "108課綱將課程分為兩大類：「部定課程」(由國家統一規定的各領域學習課程)與「校訂課程」(由學校安排的彈性學習課程)。國中的彈性學習課程包含統整性主題探究、社團活動、特殊需求領域等。"
+    },
+    {
+        id: "109-41",
+        year: "109",
+        no: 41,
+        category: "教育心理學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "柯爾柏格(L. Kohlberg)道德發展論中，某國中生不作弊是因為「怕被老師抓到會記過」，這屬於哪一個道德發展階段？",
+        options: [
+            "(A) 避罰服從取向",
+            "(B) 相對功利取向",
+            "(C) 尋求認可取向 (好孩子取向)",
+            "(D) 遵守法規取向"
+        ],
+        answer: "A",
+        explanation: "避罰服從取向 (Level 1, Stage 1) 屬於前成規期，此階段的兒童或青少年純粹以「逃避懲罰」或「服從權威」作為判斷行為對錯的唯一標準。"
+    },
+    {
+        id: "109-42",
+        year: "109",
+        no: 42,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "學生在解一元一次不等式「-3x > 6」時，常得出「x > -2」的錯誤結論。此現象最可能是因為學生在解題時忽略了什麼法則？",
+        options: [
+            "(A) 移項法則",
+            "(B) 等量加法公理",
+            "(C) 乘以或除以負數時不等號需改變方向",
+            "(D) 分配律"
+        ],
+        answer: "C",
+        explanation: "在不等式中，當兩邊同乘或同除以一個負數時，不等號的方向必須反向（即 > 變為 <）。學生常受到方程式解法的干擾，忘記在不等式中處理負號係數時需要變號。"
+    },
+    {
+        id: "109-43",
+        year: "109",
+        no: 43,
+        category: "教育測驗與評量",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "某份國中數學性向測驗，經長期追蹤後發現，能準確預測受測學生未來在高中數學課業的表現。這代表該測驗具備較高的何種效度？",
+        options: [
+            "(A) 內容效度 (Content validity)",
+            "(B) 表面效度 (Face validity)",
+            "(C) 預測效度 (Predictive validity)",
+            "(D) 同時效度 (Concurrent validity)"
+        ],
+        answer: "C",
+        explanation: "預測效度是指一個測驗的分數，能夠多準確地預測個體「未來」在某一特定領域或活動中的表現（例如用國中性向測驗預測高中學業成績）。"
+    },
+    {
+        id: "109-44",
+        year: "109",
+        no: 44,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "在國中尺規作圖教學中，教導「作一已知線段的垂直平分線(中垂線)」時，作圖原理最主要利用了哪一個四邊形的幾何性質？",
+        options: [
+            "(A) 菱形的對角線互相垂直平分",
+            "(B) 梯形的對角線等長",
+            "(C) 矩形的對角線互相平分且等長",
+            "(D) 箏形的對角線互相垂直"
+        ],
+        answer: "A",
+        explanation: "作中垂線的方法是分別以線段兩端點為圓心、大於線段一半長為等半徑畫弧交於兩點。這兩交點與線段的兩端點連線會構成一個「四邊等長」的菱形。此作法正是利用了菱形對角線互相垂直且平分的性質。"
+    },
+    {
+        id: "109-45",
+        year: "109",
+        no: 45,
+        category: "班級經營",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "教師與學生約定：「如果你這週上課都沒有遲到，週末就可以免寫一份數學測驗卷。」這屬於行為改變技術中的哪一種策略？",
+        options: [
+            "(A) 正增強 (Positive reinforcement)",
+            "(B) 負增強 (Negative reinforcement)",
+            "(C) 懲罰 (Punishment)",
+            "(D) 消弱 (Extinction)"
+        ],
+        answer: "B",
+        explanation: "負增強是指藉由「移除」一個厭惡刺激或不喜歡的事物（免寫測驗卷），來「增加」個體良好目標行為（不遲到）發生的頻率。"
+    },
+    {
+        id: "109-46",
+        year: "109",
+        no: 46,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "教學「比例」單元時，若學生觀察出「因為 3 : 5 = 6 : 10，所以 (3+6) : (5+10) 也是相同的比例」。這反映學生直覺使用了什麼數學性質？",
+        options: [
+            "(A) 交叉相乘相等",
+            "(B) 分比性質",
+            "(C) 等比性質 (加法性質)",
+            "(D) 比例中項"
+        ],
+        answer: "C",
+        explanation: "若 a:b = c:d，則 (a+c):(b+d) = a:b = c:d。這個性質在數學上稱為等比性質（或比例的加法性質），學生透過數感直覺發現了此一規律。"
+    },
+    {
+        id: "109-47",
+        year: "109",
+        no: 47,
+        category: "輔導與諮商",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "羅哲斯(C. Rogers)所創立的「個人中心治療法」(Person-Centered Therapy)中，認為諮商師應具備的三個核心條件『不』包含下列何者？",
+        options: [
+            "(A) 真誠一致 (Genuineness)",
+            "(B) 無條件積極關注 (Unconditional positive regard)",
+            "(C) 同理心 (Empathy)",
+            "(D) 客觀的分析與評斷 (Objective evaluation)"
+        ],
+        answer: "D",
+        explanation: "羅哲斯強調諮商師應具備三大條件：真誠一致、無條件積極關注、同理心。他極力反對諮商師扮演權威角色去「分析、診斷或評斷」個案，而是相信個案有自我療癒潛能。"
+    },
+    {
+        id: "109-48",
+        year: "109",
+        no: 48,
+        category: "數學教材教法",
+        frequencyLabel: "低",
+        frequencyValue: 1,
+        question: "在教授「畢氏定理」(商高定理)時，利用四個全等的直角三角形拼湊出一個大正方形，中間留下一個小正方形的面積來進行代數證明。此證明法最早見於中國古代哪一位學者的著作？",
+        options: [
+            "(A) 祖沖之",
+            "(B) 趙爽 (弦圖)",
+            "(C) 劉徽",
+            "(D) 楊輝"
+        ],
+        answer: "B",
+        explanation: "三國時代吳國的數學家「趙爽」，在註解《周髀算經》時，繪製了著名的「弦圖」，利用四個全等直角三角形與一個小正方形面積的關係，精巧地證明了勾股定理。"
+    },
+    {
+        id: "109-49",
+        year: "109",
+        no: 49,
+        category: "課程與教學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "近年來推動的「翻轉教室」(Flipped Classroom)教學模式，其最核心的概念為何？",
+        options: [
+            "(A) 將教室桌椅排列成圓形以利討論",
+            "(B) 學生在家觀看教學影片預習，課堂時間用來進行師生討論與高階解題應用",
+            "(C) 由學生上台講課，教師在台下聆聽評分",
+            "(D) 完全放棄教科書，採用全數位化的無紙本教材"
+        ],
+        answer: "B",
+        explanation: "翻轉教室將傳統「課堂講述知識、回家寫作業」的模式『翻轉』，改為「回家先透過影片吸收知識」，把寶貴的課堂時間留給「高階思考、互動討論、問題解決」。"
+    },
+    {
+        id: "109-50",
+        year: "109",
+        no: 50,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "國中機率教學中，使用「樹狀圖」(Tree diagram)來列舉樣本空間，最主要可以幫助學生克服哪一種學習困難？",
+        options: [
+            "(A) 無法理解古典機率的定義",
+            "(B) 遺漏或重複計算複合事件的所有可能結果",
+            "(C) 不會將分數化為小數或百分比",
+            "(D) 混淆主觀機率與客觀機率"
+        ],
+        answer: "B",
+        explanation: "樹狀圖能有系統地、按部就班列出複合事件（例如連續投擲三次硬幣）的所有可能結果路徑。這能有效幫助學生避免在列舉樣本點時發生遺漏或重複的問題。"
+    },
+    {
+        id: "108-01",
+        year: "108",
+        no: 1,
+        category: "教育心理學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "斯金納(B.F. Skinner)的操作制約學習理論中，教師常使用「代幣制」(如好寶寶印章)來改善學生行為。代幣本身無法直接滿足生理需求，因此屬於哪一種增強物？",
+        options: [
+            "(A) 原級增強物",
+            "(B) 次級增強物",
+            "(C) 社會性增強物",
+            "(D) 活動性增強物"
+        ],
+        answer: "B",
+        explanation: "代幣(如點數、貼紙)本身沒有直接滿足生理需求的功能，它是透過與原級增強物(如食物、兌換實體獎品)連結後才產生增強效果，因此稱為次級增強物(Secondary reinforcer)。"
+    },
+    {
+        id: "108-02",
+        year: "108",
+        no: 2,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "國中數學教授「有理數」的定義時，下列哪一個數『不屬於』有理數的範疇？",
+        options: [
+            "(A) 0",
+            "(B) 3.14",
+            "(C) 循環小數 0.333...",
+            "(D) 圓周率 π"
+        ],
+        answer: "D",
+        explanation: "有理數的嚴格定義是「能化為分數 p/q (p,q為整數且q≠0) 的數」。0、有限小數(如3.14)與循環小數皆可化為分數。圓周率 π 為無限不循環小數，無法化為整數比的分數，屬於無理數。"
+    },
+    {
+        id: "108-03",
+        year: "108",
+        no: 3,
+        category: "教育哲學",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "盧梭(J.-J. Rousseau)在《愛彌兒》一書中提倡何種教育理念，認為教育應以兒童為本位，順應兒童自然發展的法則？",
+        options: [
+            "(A) 社會化教育",
+            "(B) 自然主義教育",
+            "(C) 形式訓練說",
+            "(D) 經驗主義教育"
+        ],
+        answer: "B",
+        explanation: "盧梭提倡自然主義，主張「返回自然」，教育應順應兒童自然本性發展，反對早期過度的社會化、填鴨式與人為干預，對後世兒童中心本位思想影響深遠。"
+    },
+    {
+        id: "108-04",
+        year: "108",
+        no: 4,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "在引導學生認識代數符號「x」時，x 可以代表未知數，也可以代表變數。在方程式「2x + 3 = 7」中，x 的角色主要為何？",
+        options: [
+            "(A) 特定未知數 (Specific unknown)",
+            "(B) 普遍變數 (Variable)",
+            "(C) 函數的自變數",
+            "(D) 常數 (Constant)"
+        ],
+        answer: "A",
+        explanation: "在一元一次方程式 2x+3=7 中，x 只有一個特定的解(x=2)能使等式成立，此時 x 的角色是等待被解出的「特定未知數」，而非函數中可對應多種數值的變數。"
+    },
+    {
+        id: "108-05",
+        year: "108",
+        no: 5,
+        category: "教育測驗與評量",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "國家辦理的「國中教育會考」，不將學生做百分等級排名，而是將學生表現分為「精熟」、「基礎」、「待加強」三等級。此種評量方式屬於下列何者？",
+        options: [
+            "(A) 常模參照評量 (Norm-referenced assessment)",
+            "(B) 標準參照評量 (Criterion-referenced assessment)",
+            "(C) 最佳表現評量",
+            "(D) 動態評量 (Dynamic assessment)"
+        ],
+        answer: "B",
+        explanation: "國中教育會考是依據專家預先設定好的各科能力標準(Criterion)來檢驗學生是否達標(精熟/基礎/待加強)，而非將學生互相比較(如PR值)，因此屬於標準參照評量(又稱效標參照評量)。"
+    },
+    {
+        id: "108-06",
+        year: "108",
+        no: 6,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "國小至國一學生在學習「角度」時，常誤認為「邊長比較長的角，角度比較大」。這是因為學生受到下列何種視覺因素的干擾？",
+        options: [
+            "(A) 角度的開口方向",
+            "(B) 構成角的兩邊射線長度",
+            "(C) 角的頂點位置",
+            "(D) 測量工具(量角器)的半徑大小"
+        ],
+        answer: "B",
+        explanation: "角度的大小是由兩射線張開的旋轉量程度決定，與構成射線的長短無關。學童處於皮亞傑具體運思期，常受限於直觀視覺，將一維的「邊線長度」誤認為二維旋轉量的「角度大小」。"
+    },
+    {
+        id: "108-07",
+        year: "108",
+        no: 7,
+        category: "課程與教學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "布魯納(J. Bruner)提倡的「螺旋式課程」(Spiral Curriculum)，其核心主張為何？",
+        options: [
+            "(A) 課程應依據歷史年代順序作直線式的編排",
+            "(B) 學科基本結構概念應隨著年級增加，以加深加廣的方式重複出現",
+            "(C) 強調學科知識的零碎化學習與記憶",
+            "(D) 課程應完全由學生的突發興趣來決定方向，無需結構"
+        ],
+        answer: "B",
+        explanation: "螺旋式課程主張學科的「基本結構」應在不同學習階段重複出現，且隨著學生認知發展的成熟，內容難度逐漸加深、範圍逐漸加廣，猶如螺旋般不斷向上延伸。"
+    },
+    {
+        id: "108-08",
+        year: "108",
+        no: 8,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "在等差數列級數的教學中，教師常舉數學家高斯(Gauss)小時候快速計算 1+2+...+100 的故事。此故事最主要在引導學生發現等差級數的什麼關鍵性質？",
+        options: [
+            "(A) 公差的定義與計算",
+            "(B) 等差數列的遞迴關係式",
+            "(C) 首尾兩項對稱相加為定值，進而推導級數和公式",
+            "(D) 質數在自然數中的分佈規律"
+        ],
+        answer: "C",
+        explanation: "高斯的巧妙算法是發現 1+100=101, 2+99=101...，利用首尾對稱項相加皆為定值的特性，快速求出總和為 101 × 50 對。這正是推導等差級數和公式：(首項+末項)×項數÷2 的核心精神。"
+    },
+    {
+        id: "108-09",
+        year: "108",
+        no: 9,
+        category: "教育社會學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "某些學生因成績不佳被編入後段班，被教師或社會貼上「壞學生」或「不會讀書」的稱號後，他們逐漸認同這個身分並真的表現出符合該稱號的偏差行為。這最符合社會學的哪一種理論？",
+        options: [
+            "(A) 衝突理論 (Conflict theory)",
+            "(B) 標籤理論 (Labeling theory)",
+            "(C) 社會交換理論 (Social exchange theory)",
+            "(D) 結構功能論 (Structural functionalism)"
+        ],
+        answer: "B",
+        explanation: "標籤理論認為，偏差行為是被社會定義和標籤化出來的結果。個體一旦被強加負面標籤，可能會產生自我應驗預言，認同該標籤並產生更嚴重的「次級偏差行為」。"
+    },
+    {
+        id: "108-10",
+        year: "108",
+        no: 10,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "教授國一數學「絕對值」概念時，除了將 |x| 幾何意義定義為「數線上代表 x 的點與原點的距離」外，代數上對 |x| 的嚴格定義為下列何者？",
+        options: [
+            "(A) |x| = x",
+            "(B) 若 x ≥ 0，則 |x| = x；若 x < 0，則 |x| = -x",
+            "(C) |x| = -x",
+            "(D) |x| = x²"
+        ],
+        answer: "B",
+        explanation: "絕對值的代數定義是分段函數：當 x 是一個非負數時，脫掉絕對值不變；當 x 是一個負數時，脫掉絕對值必須多加一個負號 (-x，此時負負得正)，以確保絕對值的結果永遠為非負數。"
+    },
+    {
+        id: "108-11",
+        year: "108",
+        no: 11,
+        category: "特殊教育",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "依據《特殊教育法施行細則》之規定，身心障礙學生的「個別化教育計畫」(IEP)，學校應於新生入學後多久內訂定？",
+        options: [
+            "(A) 一週內",
+            "(B) 一個月內",
+            "(C) 一學期內",
+            "(D) 一學年內"
+        ],
+        answer: "B",
+        explanation: "依規定，學校應於身心障礙學生新生及轉學生入學後一個月內訂定其個別化教育計畫(IEP)，其餘在學學生應於開學前訂定。"
+    },
+    {
+        id: "108-12",
+        year: "108",
+        no: 12,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "在教授「一次函數 y = ax + b」時，常利用生活情境舉例。下列何種情境『最不適合』用來表徵 a≠0 且 b≠0 的一次函數？",
+        options: [
+            "(A) 計程車的車資 (起跳價+里程費)",
+            "(B) 彈簧掛重物的總長度 (原長+伸長量)",
+            "(C) 攝氏溫度與華氏溫度的轉換",
+            "(D) 以等速行駛的距離與時間的關係"
+        ],
+        answer: "D",
+        explanation: "等速行駛的距離與時間關係為「距離=速度×時間」，寫成代數為 y=kx。常數項 b 為 0，圖形是通過原點的直線（正比關係），不符合 b≠0 的條件。"
+    },
+    {
+        id: "108-13",
+        year: "108",
+        no: 13,
+        category: "教育心理學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "根據溫納(B. Weiner)的歸因理論，學生若將考試失敗歸咎於「自己準備不夠努力」，這種歸因屬於何種向度？",
+        options: [
+            "(A) 內部、穩定、可控制",
+            "(B) 內部、不穩定、可控制",
+            "(C) 外部、穩定、不可控制",
+            "(D) 內部、不穩定、不可控制"
+        ],
+        answer: "B",
+        explanation: "在 Weiner 的理論中，「努力」是來自個人內部、每次可能不同(不穩定)、且自己可以掌握改變的(可控制)。將失敗歸因於努力不足，最能激發學生未來的學習動機。"
+    },
+    {
+        id: "108-14",
+        year: "108",
+        no: 14,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "學生在初學代數式時，常將「3x」誤認為是「3+x」，或者當 x=5 時認為「3x = 35」。這種迷思概念最主要是因為學生受到什麼先備知識的干擾？",
+        options: [
+            "(A) 整數的位值概念與運算符號省略",
+            "(B) 指數律的定義",
+            "(C) 乘法交換律",
+            "(D) 等量公理"
+        ],
+        answer: "A",
+        explanation: "在小學的位值系統中，並列數字(如35)代表 3個十和5個一。學生將這種「Concatenation(並置)」經驗直接套用到代數的「3x」(省略乘號的 3 乘 x)上，因而產生將 3x 當作 30+x 或直接併成 35 的迷思。"
+    },
+    {
+        id: "108-15",
+        year: "108",
+        no: 15,
+        category: "教育哲學",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "德國哲學家哈伯瑪斯(J. Habermas)提出「溝通行動理論」，其認為理想的溝通情境應具備四個有效性宣稱(Validity claims)，下列何者『非』其宣稱之一？",
+        options: [
+            "(A) 可理解性 (Comprehensibility)",
+            "(B) 真實性 (Truth)",
+            "(C) 權威性 (Authority)",
+            "(D) 正當性 (Rightness)"
+        ],
+        answer: "C",
+        explanation: "哈伯瑪斯認為理想的溝通應具備四個有效性宣稱：可理解性(聽得懂)、真實性(內容符合客觀事實)、正當性(符合社會規範)與真誠性(說話者態度真誠)。「權威性」會破壞理性的溝通，並非其宣稱。"
+    },
+    {
+        id: "108-16",
+        year: "108",
+        no: 16,
+        category: "教育測驗與評量",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "教師在編製成就測驗前，為了確保測驗題目能均勻且周延地涵蓋「教學目標(認知歷程)」與「教材內容」，通常會先編製什麼表作為命題的藍圖？",
+        options: [
+            "(A) 雙向細目表 (Two-way specification table)",
+            "(B) 常態分配表",
+            "(C) 項目分析表",
+            "(D) 信度係數表"
+        ],
+        answer: "A",
+        explanation: "雙向細目表包含「教材內容」和「認知歷程」(如記憶、理解、應用等)兩個向度，是測驗編製的設計圖，能確保測驗具有良好的「內容效度」。"
+    },
+    {
+        id: "108-17",
+        year: "108",
+        no: 17,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "在國中數學教授「分數除法」時，為了讓學生理解「除以一個分數，等於乘以它的倒數」，下列哪一種解釋或情境最為合理且具象？",
+        options: [
+            "(A) 單純背誦口訣「顛倒相乘」",
+            "(B) 利用包含除的概念：例如問「2/3 條緞帶中，每 1/6 條剪一段，可以剪出幾段？」",
+            "(C) 利用交叉相乘法來解等式",
+            "(D) 運用輾轉相除法"
+        ],
+        answer: "B",
+        explanation: "「包含除」(Measurement division)是探討「總量中包含幾個單位量」。用 (2/3) ÷ (1/6) 代表「2/3 裡面有幾個 1/6」，透過通分 (4/6 ÷ 1/6) 學生可輕易算出答案是 4，進而歸納得顛倒相乘的運算法則。"
+    },
+    {
+        id: "108-18",
+        year: "108",
+        no: 18,
+        category: "教育社會學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "包爾斯(S. Bowles)與金提斯(H. Gintis)提出「符應原則」(Correspondence principle)，其主要觀點為何？",
+        options: [
+            "(A) 學校教育能促進社會階層的向上流動",
+            "(B) 學校的社會關係與職場的資本主義生產關係相對應，藉此複製社會不平等",
+            "(C) 教學內容應與學生的生活經驗相符應",
+            "(D) 學校建築的空間配置反映了社區文化"
+        ],
+        answer: "B",
+        explanation: "新馬克思主義學者包爾斯與金提斯認為，學校的權威結構、獎懲制度(如服從、守時)「符應」了資本主義工廠的勞資關係，教育其實是在訓練順從的勞工，從而複製並合理化了社會階級的不平等。"
+    },
+    {
+        id: "108-19",
+        year: "108",
+        no: 19,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "教學「三角形全等性質」時，教師常會舉出「SSA (邊邊角)」不能保證三角形全等的反例。然而，下列哪一種三角形在已知 SSA (已知兩邊及其中一邊對角) 的情況下，『一定』能確定全等？",
+        options: [
+            "(A) 銳角三角形",
+            "(B) 直角三角形",
+            "(C) 鈍角三角形",
+            "(D) 等腰三角形"
+        ],
+        answer: "B",
+        explanation: "如果 SSA 中的「角 (A)」是 90 度的直角，這就成了特殊的「RHS 全等性質」(直角、斜邊、一股對應相等)，此時三角形形狀唯一確定，必定全等。"
+    },
+    {
+        id: "108-20",
+        year: "108",
+        no: 20,
+        category: "課程與教學",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "艾斯納(E. Eisner)提出，學校中有一種課程是「學校該教而未教，導致學生失去學習機會或形成認知盲點的課程」，此種課程稱之為？",
+        options: [
+            "(A) 正式課程",
+            "(B) 潛在課程",
+            "(C) 空無課程 (懸缺課程 / Null curriculum)",
+            "(D) 非正式課程"
+        ],
+        answer: "C",
+        explanation: "空無課程是指因為意識形態、時數不足或教師刻意避開，導致未納入學校課程體系中的知識（例如某些爭議性歷史、性別教育等）。這同樣會對學生的價值觀產生影響。"
+    },
+    {
+        id: "108-21",
+        year: "108",
+        no: 21,
+        category: "班級經營",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "教師告訴學生：「只要你們專心把這十題難度較高的數學題寫完，下半節課就可以去外面打籃球。」教師運用了學生較喜歡的活動來增強較不喜歡的行為。這在心理學上稱為什麼原則？",
+        options: [
+            "(A) 霍桑效應",
+            "(B) 普里馬克原則 (Premack Principle / 阿嬤的法寶)",
+            "(C) 破窗效應",
+            "(D) 月暈效應"
+        ],
+        answer: "B",
+        explanation: "普里馬克原則是指「以發生頻率較高(較喜歡)的行為，來作為發生頻率較低(較不喜歡)行為的增強物」。俗稱「阿嬤的法寶」(吃完青菜才能吃布丁)。"
+    },
+    {
+        id: "108-22",
+        year: "108",
+        no: 22,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "學生在解二次函數 y = ax² + bx + c 時，若判別式 D = b² - 4ac < 0，學生常錯誤地認為「函數圖形整個在 x 軸的下方」。要糾正此迷思，教師應引導學生檢查哪一個係數的作用？",
+        options: [
+            "(A) a 的正負 (決定開口方向)",
+            "(B) b 的正負 (決定對稱軸位置)",
+            "(C) c 的正負 (決定 y 截距)",
+            "(D) 頂點的 x 座標"
+        ],
+        answer: "A",
+        explanation: "D < 0 只代表圖形與 x 軸「沒有交點」。它可能整個在 x 軸上方(開口向上，a>0)，也可能整個在 x 軸下方(開口向下，a<0)。學生常將「<0」直接連結為「在下方」，忽略了係數 a 決定的開口方向。"
+    },
+    {
+        id: "108-23",
+        year: "108",
+        no: 23,
+        category: "輔導與諮商",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "依據我國《學生輔導法》，學校的三級輔導體制中，針對「已經發生嚴重適應困難或偏差行為，甚至有中輟、自傷、傷人行為的學生」，應啟動哪一級的輔導機制，並結合醫療或社政資源介入？",
+        options: [
+            "(A) 發展性輔導 (一級)",
+            "(B) 介入性輔導 (二級)",
+            "(C) 處遇性輔導 (三級)",
+            "(D) 預防性輔導"
+        ],
+        answer: "C",
+        explanation: "三級輔導體制為：一級(發展性)針對全體學生；二級(介入性)針對有輕微困擾或高關懷群學生(由輔導老師介入)；三級(處遇性)針對嚴重行為偏差或需跨網絡系統協助的學生(結合心理師、社工師或醫療資源)。"
+    },
+    {
+        id: "108-24",
+        year: "108",
+        no: 24,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "在教授「根號」運算時，學生常出現「√(a² + b²) = a + b」的直覺錯誤。為了破除這個迷思，教師舉例讓學生代入 a=3, b=4 進行驗證，讓學生自己發現 √(3²+4²) = 5，但不等於 3+4=7。這在數學教學策略上稱為？",
+        options: [
+            "(A) 演繹證明",
+            "(B) 歸納推理",
+            "(C) 認知衝突",
+            "(D) 類比推理"
+        ],
+        answer: "C",
+        explanation: "認知衝突(Cognitive conflict)是提供一個與學生原有錯誤直覺(迷思概念)相矛盾的具體「反例」，使學生原有的基模失去平衡，進而產生學習正確概念的動機並調整認知結構。"
+    },
+    {
+        id: "108-25",
+        year: "108",
+        no: 25,
+        category: "教育行政與法規",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "為落實 108 課綱精神，促進教師專業發展，現行規定高級中等以下學校校長及教師，每學年應在學校或社群進行幾次「公開授課」？",
+        options: [
+            "(A) 至少一次",
+            "(B) 至少兩次",
+            "(C) 每學期一次",
+            "(D) 不強制規定，採自願制"
+        ],
+        answer: "A",
+        explanation: "依據十二年國民基本教育課程綱要總綱規定，為持續提升教學品質與學生學習成效，校長及每位教師「每學年」應至少公開授課一次，並進行專業回饋。"
+    },
+    {
+        id: "108-26",
+        year: "108",
+        no: 26,
+        category: "教育心理學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "皮亞傑(J. Piaget)提出認知發展的歷程包含同化(Assimilation)與調適(Accommodation)。當個體遇到新經驗，發現無法用既有的基模(Schema)去解釋時，必須改變或創造新基模以適應環境，這個過程稱為：",
+        options: [
+            "(A) 同化",
+            "(B) 調適",
+            "(C) 平衡",
+            "(D) 組織"
+        ],
+        answer: "B",
+        explanation: "同化是將新經驗納入舊基模中(如把斑馬稱為有條紋的馬)；調適則是當舊基模不適用時，改變原有基模或創造新基模來處理新資訊的過程(知道斑馬是另一種獨立物種)。"
+    },
+    {
+        id: "108-27",
+        year: "108",
+        no: 27,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "在國中統計單元，當一組資料呈現「右偏分配(正偏態，Positive Skew)」時，代表多數資料集中在低分群，且少數人有極端高分。此時，算術平均數、中位數與眾數的大小關係為何？",
+        options: [
+            "(A) 平均數 > 中位數 > 眾數",
+            "(B) 眾數 > 中位數 > 平均數",
+            "(C) 中位數 > 平均數 > 眾數",
+            "(D) 三者相等"
+        ],
+        answer: "A",
+        explanation: "在正偏態分佈中，長尾巴拖在右邊(高分端)。極端高分會強力拉高算術平均數，中位數受影響較小，而眾數(最高峰處)停留在低分區。因此大小順序為：平均數 > 中位數 > 眾數。"
+    },
+    {
+        id: "108-28",
+        year: "108",
+        no: 28,
+        category: "課程與教學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "近年來強調跨領域的課程統整設計。以一個社會議題或生活主題（如「環境保育」）為中心，打破學科界線，將國文、自然、社會等學科知識結合在一起進行探究的課程設計模式，最接近下列何者？",
+        options: [
+            "(A) 相關課程 (Correlated curriculum)",
+            "(B) 融合課程 (Fused curriculum)",
+            "(C) 廣域課程 (Broad-fields curriculum)",
+            "(D) 核心課程 (Core curriculum)"
+        ],
+        answer: "D",
+        explanation: "核心課程以社會問題或生活主題為「核心」，周圍環繞著各個學科知識共同解決此主題。它完全打破了傳統學科的界線，重視學習的統整性與社會實用性。"
+    },
+    {
+        id: "108-29",
+        year: "108",
+        no: 29,
+        category: "教育社會學",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "有位出身貧寒家庭的學生，憑藉自身在教育體系中的努力，考取頂尖大學並成為知名醫師，成功改變了自己原有的社會階層。這在社會學上稱為？",
+        options: [
+            "(A) 水平社會流動",
+            "(B) 結構性社會流動",
+            "(C) 垂直社會流動 (向上流動)",
+            "(D) 代內社會流動"
+        ],
+        answer: "C",
+        explanation: "垂直社會流動是指個人社會地位層級的上下改變(向上流動或向下流動)。教育常被視為促進個人向上「垂直社會流動」的重要階梯。"
+    },
+    {
+        id: "108-30",
+        year: "108",
+        no: 30,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "在教導國中生計算連比(a:b:c)時，若已知 a:b = 2:3 且 b:c = 4:5，教師教導學生找出中間項 b 的最小公倍數(12)來統一比例。此作法在數學本質上是基於下列哪一個概念的應用？",
+        options: [
+            "(A) 等量公理",
+            "(B) 比例的擴分與等值分數",
+            "(C) 分配律",
+            "(D) 結合律"
+        ],
+        answer: "B",
+        explanation: "將 a:b = 2:3 擴分為 8:12，將 b:c = 4:5 擴分為 12:15，其實就是利用分數等值(擴分)的概念。當基準量(b)相同時，即可合併為 a:b:c = 8:12:15。"
+    },
+    {
+        id: "108-31",
+        year: "108",
+        no: 31,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "國一學生在撰寫科學報告時寫出：「地球到太陽的距離約為 15 × 10⁷ 公里」。這不符合科學記號標準，應改為 1.5 × 10⁸。在數學上，科學記號 a × 10ⁿ 嚴格規定「1 ≤ a < 10」的最主要目的為何？",
+        options: [
+            "(A) 為了配合電腦二進位系統的儲存格式",
+            "(B) 建立統一的數值表示法，以利於快速判斷數量級與比較大小",
+            "(C) 避免出現無理數或循環小數",
+            "(D) 確保所有的數都能轉化為整數"
+        ],
+        answer: "B",
+        explanation: "科學記號將數值統一規範為一個個位數(1 ≤ a < 10)乘上10的次方。這能讓不同的數值在第一時間只看指數(數量級)就能迅速比較出大小，也是科學界溝通的標準格式。"
+    },
+    {
+        id: "108-32",
+        year: "108",
+        no: 32,
+        category: "教育心理學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "關於兒童在學習時常出現的「自言自語」(私語，Private Speech)，皮亞傑(Piaget)與維高斯基(Vygotsky)的觀點有何不同？",
+        options: [
+            "(A) 皮亞傑認為是自我中心主義的表現；維高斯基認為是引導自我行為與思考的調節工具",
+            "(B) 皮亞傑認為是認知成熟的象徵；維高斯基認為是語言發展遲緩的現象",
+            "(C) 兩者皆認為私語對認知發展毫無幫助，應予以糾正",
+            "(D) 皮亞傑認為私語會促進社會化；維高斯基認為私語代表逃避社交"
+        ],
+        answer: "A",
+        explanation: "皮亞傑將兒童的自言自語視為尚未脫離「自我中心思維」的結果；而維高斯基則高度肯定私語的價值，認為這是兒童將外部社交語言轉化為內部思考、用以自我引導與調節行為的重要過渡階段。"
+    },
+    {
+        id: "108-33",
+        year: "108",
+        no: 33,
+        category: "教育測驗與評量",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "某學生的數學測驗成績經過標準化後，轉換為 Z分數為 1.5。若學校規定成績單上需統一以「T分數」(平均數為50，標準差為10)來呈現，則該生的 T分數應為多少？",
+        options: [
+            "(A) 15",
+            "(B) 55",
+            "(C) 65",
+            "(D) 85"
+        ],
+        answer: "C",
+        explanation: "T分數與Z分數的轉換公式為：T = 10Z + 50。將 Z=1.5 代入，T = 10*(1.5) + 50 = 15 + 50 = 65。"
+    },
+    {
+        id: "108-34",
+        year: "108",
+        no: 34,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "學生在學習相似形時，常直覺認為「將一個正方形的邊長放大為原來的 3 倍，其面積也會變成原來的 3 倍」。這屬於學生在認知上的何種迷思概念？",
+        options: [
+            "(A) 搞混了相似圖形與全等圖形的定義",
+            "(B) 將一維長度的線性放大率，錯誤地等同於二維面積的放大率",
+            "(C) 未能理解無窮等比級數的收斂性質",
+            "(D) 缺乏對稱性思維"
+        ],
+        answer: "B",
+        explanation: "邊長(一維)放大 3 倍，面積(二維)應該會放大 3² = 9 倍。學生常把「長度放大 k 倍」的線性思考，直接錯誤遷移到面積或體積(k³)上。"
+    },
+    {
+        id: "108-35",
+        year: "108",
+        no: 35,
+        category: "教育社會學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "英國學者威里斯(P. Willis)在《學習做勞工》一書中探討勞工階級子弟為何大多繼續從事勞力工作。他發現這些學生並非單純被學校洗腦，而是主動發展出「反學校文化」來對抗中產階級的學校價值。此觀點被稱為什麼理論？",
+        options: [
+            "(A) 社會流動理論",
+            "(B) 人力資本理論",
+            "(C) 現代化理論",
+            "(D) 抗拒理論 (Resistance Theory)"
+        ],
+        answer: "D",
+        explanation: "抗拒理論(Resistance Theory)強調弱勢或勞工階級的學生具有主體性，他們透過建立「反學校文化」(如覺得讀書沒用、崇尚男子氣概)來「抗拒」學校的權威與主流文化，但諷刺的是，這種抗拒最終卻導致他們自我侷限，正好世襲了勞工階級的命運。"
+    },
+    {
+        id: "108-36",
+        year: "108",
+        no: 36,
+        category: "課程與教學",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "古德拉(J. Goodlad)將課程分為五個不同的層次。其中，學生在課堂中實際聽到的、體驗到的，且在他們心中產生實際學習意義的課程，稱之為何？",
+        options: [
+            "(A) 理想課程 (Ideal curriculum)",
+            "(B) 正式課程 (Formal curriculum)",
+            "(C) 運作課程 (Operational curriculum)",
+            "(D) 經驗課程 (Experiential curriculum)"
+        ],
+        answer: "D",
+        explanation: "古德拉的課程五層次：理想(學者提出)、正式(官方頒布)、知覺(教師理解)、運作(教師實際教出)、經驗(學生實際體驗與學到)。故學生所體驗的為「經驗課程」。"
+    },
+    {
+        id: "108-37",
+        year: "108",
+        no: 37,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "為了讓國中生直觀接受「0.999... (9循環) = 1」，教師利用「1/3 = 0.333...」，再將等式兩邊同乘 3 得到「1 = 0.999...」。這在數學教學與證明層次上屬於下列何者？",
+        options: [
+            "(A) 嚴格的公理化演繹證明",
+            "(B) 數學歸納法證明",
+            "(C) 直觀啟發的非形式化說理",
+            "(D) 反證法"
+        ],
+        answer: "C",
+        explanation: "國中生尚未學習極限(Limit)概念，無法進行嚴謹的分析證明。透過分數乘法來展現 0.999... = 1，是一種配合學生認知發展程度、藉由已知運算規律來引導相信的「直觀非形式化說理」。"
+    },
+    {
+        id: "108-38",
+        year: "108",
+        no: 38,
+        category: "輔導與諮商",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "有作弊傾向的學生，常懷疑班上其他同學也都在作弊；自己對別人懷有敵意，就認為別人都在針對自己。這種將自己不為社會認可的動機或缺點，歸咎到他人身上的心理防衛機制稱為？",
+        options: [
+            "(A) 合理化 (Rationalization)",
+            "(B) 投射作用 (Projection)",
+            "(C) 反向作用 (Reaction formation)",
+            "(D) 昇華 (Sublimation)"
+        ],
+        answer: "B",
+        explanation: "投射作用(Projection)是指個體將自己無法接受的潛意識慾望、特質或動機，認為是「別人」擁有的，藉此減輕焦慮(例如：不是我愛作弊，是大家都愛作弊)。"
+    },
+    {
+        id: "108-39",
+        year: "108",
+        no: 39,
+        category: "教育行政與法規",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "依據《性別平等教育法》規定，學校設立「性別平等教育委員會」處理相關案件時，其委員組成中，女性委員應占委員總數的比例至少為多少？",
+        options: [
+            "(A) 三分之一以上",
+            "(B) 五分之二以上",
+            "(C) 二分之一以上",
+            "(D) 三分之二以上"
+        ],
+        answer: "C",
+        explanation: "依《性別平等教育法》規定，性別平等教育委員會之女性委員應占委員總數二分之一以上；且任一性別委員應占委員總數三分之一以上。"
+    },
+    {
+        id: "108-40",
+        year: "108",
+        no: 40,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "學生剛學習二次函數 y = x² 時，若只描出整數點(如 x=-2, -1, 0, 1, 2)，常會將點用直線相連，誤以為圖形底部像英文字母「V」一樣有尖角。教師應引導學生計算哪一個區間的數值，最能幫助他們察覺圖形底部是平滑的 U型曲線？",
+        options: [
+            "(A) x > 10 的極大值",
+            "(B) x < -10 的極小值",
+            "(C) x = 3, 4, 5 的連續整數",
+            "(D) 介於 x = -1 與 x = 1 之間的小數點(如 0.1, 0.5)"
+        ],
+        answer: "D",
+        explanation: "當代入 x=0.5 (y=0.25)、x=0.1 (y=0.01) 等靠近頂點(x=0)的分數或小數時，學生會發現 y 值的下降趨勢變得非常緩慢，進而發現圖形在頂點附近並非直線下降，而是平緩過渡的 U型曲線。"
+    },
+    {
+        id: "108-41",
+        year: "108",
+        no: 41,
+        category: "教育哲學",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "諾丁絲(N. Noddings)提出的「關懷倫理學」(Ethics of Care)，在道德教育上特別強調下列何者？",
+        options: [
+            "(A) 追求絕對客觀、放諸四海皆準的正義原則",
+            "(B) 建立人與人之間的情感連結、相互依賴與回應的關係",
+            "(C) 嚴格遵守法律與社會契約，不可逾越",
+            "(D) 透過理性的道德兩難故事進行抽象思辨"
+        ],
+        answer: "B",
+        explanation: "傳統的道德發展論(如柯爾柏格)偏向「正義倫理」，強調客觀、公平、理性。諾丁絲的「關懷倫理」則認為道德立基於人際關係，強調同理心、情感回應、關懷者與被關懷者之間的連結。"
+    },
+    {
+        id: "108-42",
+        year: "108",
+        no: 42,
+        category: "班級經營",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "高登(T. Gordon)提倡的教師效能訓練中，建議教師遇到學生干擾行為時，應使用「我訊息」(I-message)來溝通。下列何者是標準的「我訊息」表達方式？",
+        options: [
+            "(A) 「當你上課一直講話時，我感到很受挫，因為這會讓我必須中斷教學，影響進度。」",
+            "(B) 「你為什麼老是不專心聽講？你這樣對得起父母嗎？」",
+            "(C) 「你立刻給我安靜，不然就去外面罰站！」",
+            "(D) 「我覺得你是一個很沒有禮貌的學生。」"
+        ],
+        answer: "A",
+        explanation: "「我訊息」包含三個要素：1.客觀描述學生的行為(當你一直講話)；2.表達教師的真實感受(我感到受挫)；3.說明該行為造成的具體影響(影響教學進度)。它避免了「你訊息」常帶有的指責與評價色彩。"
+    },
+    {
+        id: "108-43",
+        year: "108",
+        no: 43,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "學生認為「因為兩個菱形的四個邊都分別對應相等 (即 SSSS)，所以這兩個菱形一定全等」。此迷思概念是因為學生過度推論了哪一種圖形的全等性質？",
+        options: [
+            "(A) 圓形",
+            "(B) 直角三角形",
+            "(C) 三角形 (SSS全等)",
+            "(D) 梯形"
+        ],
+        answer: "C",
+        explanation: "三角形具有穩定性，只要三邊長固定(SSS)，形狀就唯一確定，必定全等。但四邊形沒有穩定性，四邊相等的菱形，可以被「壓扁」改變內角度數。學生將三角形專屬的 SSS 全等性質錯誤地過度推論到多邊形上。"
+    },
+    {
+        id: "108-44",
+        year: "108",
+        no: 44,
+        category: "教育心理學",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "根據馬斯洛(A. Maslow)的需求層次理論，人類的「求知與理解的需求」以及「審美的需求」被歸類於下列哪一個層次分類中？",
+        options: [
+            "(A) 匱乏需求 (Deficiency needs)",
+            "(B) 生理需求 (Physiological needs)",
+            "(C) 安全需求 (Safety needs)",
+            "(D) 成長需求 (Growth needs)"
+        ],
+        answer: "D",
+        explanation: "馬斯洛的需求分為兩大類：低階的「匱乏需求」(生理、安全、愛與隸屬、尊嚴，滿足後動力降低)與高階的「成長需求」(求知、審美、自我實現，滿足後動力反而增強)。"
+    },
+    {
+        id: "108-45",
+        year: "108",
+        no: 45,
+        category: "特殊教育",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "某學生在數理邏輯智力測驗中表現極為優異(達資優標準)，但同時卻被醫師與特教團隊診斷出患有嚴重的閱讀障礙，導致語文成績低落。在特殊教育領域中，這類學生通常被稱為何？",
+        options: [
+            "(A) 邊緣性智力學生",
+            "(B) 雙重特殊需求學生 (Twice-exceptional)",
+            "(C) 亞斯伯格症候群",
+            "(D) 選擇性緘默症"
+        ],
+        answer: "B",
+        explanation: "雙重特殊需求學生(2e學生)是指同時具備「資賦優異」與「身心障礙」(如學障、自閉、過動)兩種特質的學生。他們常因障礙掩蓋了天賦，或因天賦掩蓋了障礙而容易被忽視。"
+    },
+    {
+        id: "108-46",
+        year: "108",
+        no: 46,
+        category: "課程與教學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "108課綱鼓勵打破學科界線的統整性探究。近年國際教育界（如芬蘭）積極推動的「現象導向學習」(Phenomenon-based learning, PhBL)，其核心精神最接近下列何種課程設計取向？",
+        options: [
+            "(A) 以真實世界的問題或主題為核心的跨領域學習",
+            "(B) 嚴格遵循傳統分科架構的學科本位學習",
+            "(C) 完全屏棄教師引導的放任式學習",
+            "(D) 以標準化測驗分數為唯一目標的競爭式學習"
+        ],
+        answer: "A",
+        explanation: "現象導向學習(PhBL)強調從真實世界的「現象」或「議題」(如氣候變遷、歐盟歷史)出發，整合多個學科的視角進行探究，完全符合跨領域與素養導向的核心精神。"
+    },
+    {
+        id: "108-47",
+        year: "108",
+        no: 47,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "數學家波利亞(G. Polya)在《如何解題》一書中提出解題四步驟：了解問題、擬定計畫、執行計畫、回顧。在最後一個「回顧」(Looking back)步驟中，教師最適合引導學生進行哪一項活動？",
+        options: [
+            "(A) 放棄原本題目，直接開始寫下一題以節省時間",
+            "(B) 默寫並背誦出剛剛使用的公式",
+            "(C) 檢驗答案的合理性，並思考是否有其他更簡便的解法，或能否將結論推廣",
+            "(D) 將題目的數字改大，重新做一次機械運算"
+        ],
+        answer: "C",
+        explanation: "「回顧」不僅僅是對答案，更重要的是反思解題歷程。包含檢驗邏輯是否合理、尋求一題多解、以及將此題的解題策略一般化或推廣到其他情境(後設認知訓練)。"
+    },
+    {
+        id: "108-48",
+        year: "108",
+        no: 48,
+        category: "輔導與諮商",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "下列哪一位心理學家強調「社會興趣」(Social interest)，認為人天生就有追求卓越、克服自卑的動力，且個體的行為都是受到未來目標所引導的(目的論)？",
+        options: [
+            "(A) 阿德勒 (A. Adler)",
+            "(B) 佛洛伊德 (S. Freud)",
+            "(C) 斯金納 (B.F. Skinner)",
+            "(D) 羅哲斯 (C. Rogers)"
+        ],
+        answer: "A",
+        explanation: "阿德勒創立個體心理學。他反對佛洛伊德的宿命論與泛性論，提出自卑與超越、出生序、社會興趣與「目的論」(行為是為了達成未來的目標，而非全受過去經驗支配)。"
+    },
+    {
+        id: "108-49",
+        year: "108",
+        no: 49,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "教授「任意凸多邊形的外角和皆為 360 度」時，教師讓學生想像自己站在多邊形的一個頂點上，沿著邊線往前走，並在每一個頂點處轉彎(轉過一個外角)，最後回到原點且面向原本出發的方向。這種引導方式屬於何種教學表徵？",
+        options: [
+            "(A) 符號表徵 (Symbolic representation)",
+            "(B) 圖像表徵 (Pictorial representation)",
+            "(C) 聲音表徵 (Auditory representation)",
+            "(D) 身體動覺表徵 (Embodied / Kinesthetic representation)"
+        ],
+        answer: "D",
+        explanation: "將抽象的幾何角度轉換為「人體沿著邊緣行走與旋轉」的具體動作想像，利用身體經驗來理解數學概念，這被稱為具身認知(Embodied cognition)或身體動覺表徵。"
+    },
+    {
+        id: "108-50",
+        year: "108",
+        no: 50,
+        category: "教育測驗與評量",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "關於一份標準化測驗中單一試題的「難度」(P值，答對率)與「鑑別度」(D值)之間的關係，下列敘述何者最為正確？",
+        options: [
+            "(A) 當難度為 0 (太難)時，鑑別度會達到最高",
+            "(B) 當難度適中 (P值接近 0.5) 時，試題的鑑別度「可能」達到極大化",
+            "(C) 當難度為 1 (太簡單)時，鑑別度會達到最高",
+            "(D) 難度與鑑別度是兩個完全無關的指標，互不影響"
+        ],
+        answer: "B",
+        explanation: "難度(P值)為 0 或 1 時，代表所有人全錯或全對，此時完全無法區分高低分組，鑑別度(D值)必定為 0。只有在難度適中(約0.5)時，才「有機會」將學生分出一半會、一半不會，使鑑別度達到最大的理論值 1。"
+    },
+    {
+        id: "107-01",
+        year: "107",
+        no: 1,
+        category: "教育心理學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "布魯納(J. Bruner)認為人類認知表徵的發展有其順序。當國中生能不依賴具體實物或圖形，直接運用數學公式或代數符號 (如 x, y) 來解題時，屬於哪一個表徵階段？",
+        options: [
+            "(A) 動作表徵 (Enactive representation)",
+            "(B) 影像表徵 (Iconic representation)",
+            "(C) 符號表徵 (Symbolic representation)",
+            "(D) 抽象表徵"
+        ],
+        answer: "C",
+        explanation: "布魯納的認知表徵依序為：動作表徵(靠操作實物理解)、影像表徵(靠圖形圖像理解)、符號表徵(能運用語文或數學代數符號進行抽象思考)。"
+    },
+    {
+        id: "107-02",
+        year: "107",
+        no: 2,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "在教授二元一次聯立方程式時，教師引導學生將兩條直線方程式畫在同一平面座標系上。學生發現兩直線的「交點」座標即為該聯立方程式的解。此教學活動主要在幫助學生建立何種連結？",
+        options: [
+            "(A) 幾何表徵與代數表徵的連結",
+            "(B) 離散數學與連續數學的連結",
+            "(C) 統計圖表與機率的連結",
+            "(D) 數論與幾何的連結"
+        ],
+        answer: "A",
+        explanation: "「兩直線的交點」是視覺圖像的幾何表徵；而「聯立方程式的解」是代數表徵。將兩者結合，能讓學生深刻理解代數方程在幾何空間中的真實意義。"
+    },
+    {
+        id: "107-03",
+        year: "107",
+        no: 3,
+        category: "教育哲學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "英國經驗主義哲學家洛克(J. Locke)提出著名的「白板說」(Tabula Rasa)，認為人心如同一張白紙。此觀點在教育上的啟示為何？",
+        options: [
+            "(A) 教育應完全順應兒童天生的內在發展法則",
+            "(B) 知識的獲取完全依賴後天的感官經驗與學習環境",
+            "(C) 兒童天生帶有原罪，需透過教育來淨化",
+            "(D) 教育應重視先天遺傳智力的篩選"
+        ],
+        answer: "B",
+        explanation: "經驗主義反對理性主義的「先天觀念」。洛克認為人類沒有先天帶來的知識，一切知識與觀念都是後天透過感官經驗在「白板」上刻畫出來的，故極度強調後天教育與環境的重要性。"
+    },
+    {
+        id: "107-04",
+        year: "107",
+        no: 4,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "國中小學生常將數學算式中的「=」(等號) 誤解為「計算出答案的指令」(如看見 3+4 就急著在等號後寫 7)，而無法理解「3+4 = 2+5」的意義。這種現象代表學生缺乏對等號的何種概念？",
+        options: [
+            "(A) 運算(Operation)概念",
+            "(B) 等價(Equivalence)關係概念",
+            "(C) 遞移律(Transitive property)概念",
+            "(D) 結合律概念"
+        ],
+        answer: "B",
+        explanation: "等號「=」在代數中代表的是兩邊數值「相等、平衡、等值」的關係(Equivalence)，而非單向的「執行計算並產出結果」。這是在進入國中代數方程式學習前必須克服的重大迷思。"
+    },
+    {
+        id: "107-05",
+        year: "107",
+        no: 5,
+        category: "課程與教學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "塔巴(H. Taba)主張課程設計不應由上而下的行政指令決定，而應由第一線的教師從基層做起，透過歸納的方式來發展課程。此種課程設計模式稱為？",
+        options: [
+            "(A) 目標模式",
+            "(B) 情境模式",
+            "(C) 草根模式 (Grassroots Model)",
+            "(D) 歷程模式"
+        ],
+        answer: "C",
+        explanation: "塔巴(Taba)反對泰勒由上而下的演繹法，提倡「草根模式」。她強調教師是課程發展的核心，主張課程應由第一線教師針對學生需求，由下而上、採用歸納法來設計。"
+    },
+    {
+        id: "107-06",
+        year: "107",
+        no: 6,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "國中數學教授「標準差」時，若兩班數學段考的平均分數相同，但甲班的標準差為 12，乙班的標準差為 5。這代表什麼統計意義？",
+        options: [
+            "(A) 甲班的整體成績優於乙班",
+            "(B) 乙班的及格人數一定比甲班多",
+            "(C) 甲班學生成績的個別差異(離散程度)比乙班大",
+            "(D) 乙班的眾數大於甲班"
+        ],
+        answer: "C",
+        explanation: "平均數代表集中趨勢，標準差則代表資料的「離散程度」。標準差越大，表示資料越分散、個別差異越大；標準差越小，表示學生成績越集中於平均數附近。"
+    },
+    {
+        id: "107-07",
+        year: "107",
+        no: 7,
+        category: "教育測驗與評量",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "在數學單元教學「前」或教學中，教師為了找出學生在先備知識上是否有長期的迷思概念或學習困難，以便對症下藥進行補救教學。此種評量稱為？",
+        options: [
+            "(A) 安置性評量",
+            "(B) 形成性評量",
+            "(C) 總結性評量",
+            "(D) 診斷性評量"
+        ],
+        answer: "D",
+        explanation: "診斷性評量(Diagnostic Assessment)的目的在於發掘學生持續性的學習困難、錯誤迷思或潛在的成因，有如醫生診斷病情，以便隨後提供針對性的補救教學。"
+    },
+    {
+        id: "107-08",
+        year: "107",
+        no: 8,
+        category: "特殊教育",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "我國《特殊教育法》精神中，強調身心障礙學生應盡可能與一般同儕在普通教育環境中共同學習，除非其障礙程度嚴重到在普通班提供輔助仍無法達到學習成效。此理念稱為？",
+        options: [
+            "(A) 零拒絕 (Zero reject)",
+            "(B) 個別化教育計畫 (IEP)",
+            "(C) 最少限制環境 (Least Restrictive Environment, LRE)",
+            "(D) 無障礙實體環境"
+        ],
+        answer: "C",
+        explanation: "最少限制環境(LRE)強調特教生應盡量安置在最接近常態、與一般同儕互動最多的普通教育環境中學習，這是推動「融合教育」的核心法規基礎。"
+    },
+    {
+        id: "107-09",
+        year: "107",
+        no: 9,
+        category: "教育心理學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "國中生在記憶圓周率「3.1415926」時，將其拆解為「3.14-159-26」三組數字來背誦。這種將零散訊息組合成有意義的較大單位，以突破短期記憶容量限制的策略稱為？",
+        options: [
+            "(A) 軌跡法 (Loci method)",
+            "(B) 意象法 (Imagery)",
+            "(C) 意元集組 (Chunking)",
+            "(D) 字鉤法 (Peg-word method)"
+        ],
+        answer: "C",
+        explanation: "米勒(G. Miller)提出人類短期記憶容量約為 7±2 個意元(Chunk)。透過「意元集組」，可以將多個小訊息結合成少數有意義的區塊，有效擴大短期記憶的處理效能。"
+    },
+    {
+        id: "107-10",
+        year: "107",
+        no: 10,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "教師在黑板上畫了一個矩形，先將其垂直等分成 3 份並塗色其中 2 份；接著再將塗色部分水平等分成 5 份，並畫上斜線標示其中的 4 份。此圖形表徵最適合用來解釋下列哪一個算式？",
+        options: [
+            "(A) 2/3 + 4/5",
+            "(B) 2/3 - 4/5",
+            "(C) 2/3 × 4/5",
+            "(D) 2/3 ÷ 4/5"
+        ],
+        answer: "C",
+        explanation: "這是分數乘法經典的「面積模式(Area Model)」表徵。先取全部的 2/3，再從這 2/3 裡面去取 4/5 (即求 2/3 的 4/5 倍是多少)，最後數出重疊的格子佔全部的比例 (8/15)。"
+    },
+    {
+        id: "107-11",
+        year: "107",
+        no: 11,
+        category: "教育社會學",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "社會學家墨頓(R. Merton)將社會制度的功能分為「顯性功能」與「隱性功能」。下列何者屬於學校教育的「隱性功能」(Latent function)？",
+        options: [
+            "(A) 傳授學科基礎知識",
+            "(B) 培養學生的公民素養與道德",
+            "(C) 減緩青少年進入勞動市場的時間，發揮托育作用",
+            "(D) 訓練未來的職業技能"
+        ],
+        answer: "C",
+        explanation: "顯性功能是指社會制度預期且公開聲明的功能(如傳授知識、社會化)。隱性功能則是非預期、未明言的附帶功能，例如學校變相成為了交友中心、婚姻市場，或是發揮托育及延緩失業的作用。"
+    },
+    {
+        id: "107-12",
+        year: "107",
+        no: 12,
+        category: "班級經營",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "葛拉瑟(W. Glasser)的「現實治療法」與「抉擇理論」(Choice Theory)認為，學生在課堂上的干擾行為，通常是因為他們有某種基本心理需求未被滿足。下列何者『非』其提出的五大基本需求之一？",
+        options: [
+            "(A) 生存 (Survival)",
+            "(B) 愛與隸屬 (Love and belonging)",
+            "(C) 權力 (Power)",
+            "(D) 審美 (Aesthetic)"
+        ],
+        answer: "D",
+        explanation: "葛拉瑟主張人類所有的行為都是為了解決內在的五大基本需求：生存、愛與隸屬、權力(成就感/重要性)、自由、樂趣。「審美」是馬斯洛需求層次理論中的成長需求。"
+    },
+    {
+        id: "107-13",
+        year: "107",
+        no: 13,
+        category: "教育行政與法規",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "近年來教育行政改革強調「學校本位管理」(School-Based Management, SBM)，其核心理念為何？",
+        options: [
+            "(A) 將教育決策權力集中於中央教育部",
+            "(B) 權力下放，讓學校成員(校長、教師、家長)擁有更多的自治權與決策參與權",
+            "(C) 學校應完全交由私人企業經營管理",
+            "(D) 廢除所有全國性的教育法規"
+        ],
+        answer: "B",
+        explanation: "學校本位管理(SBM)的核心是權力下放(Decentralization)與參與式決策。強調學校是最了解學生需求的地方，應賦予學校與社區關係人更多的辦學彈性與責任。"
+    },
+    {
+        id: "107-14",
+        year: "107",
+        no: 14,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "在教授整數減法「3 - (-2) = 5」時，若教師使用代表正數(白子)與負數(黑子)的籌碼進行教學，最關鍵的教學步驟是引導學生引入何種概念，才能順利從 3 個白子中「拿走」2 個黑子？",
+        options: [
+            "(A) 絕對值概念",
+            "(B) 零對 (Zero pairs) 概念",
+            "(C) 乘法分配律",
+            "(D) 交換律"
+        ],
+        answer: "B",
+        explanation: "原本只有 3 個正(白子)，沒有負(黑子)可以被減(拿走)。必須先補入 2 組「一白一黑」(即 2 個零，總值不變)，此時盤面上有 5白2黑。這時就有 2個黑子可以拿走，剩下 5 個白子(答案為5)。此為「零對(中和)」概念。"
+    },
+    {
+        id: "107-15",
+        year: "107",
+        no: 15,
+        category: "輔導與諮商",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "學生在數學競賽中落榜，卻對同學說：「其實那個比賽的題目出得很偏，就算得獎也沒什麼了不起，我根本不想贏。」這種心理防衛機制稱為？",
+        options: [
+            "(A) 投射作用 (Projection)",
+            "(B) 反向作用 (Reaction formation)",
+            "(C) 合理化作用 (Rationalization)",
+            "(D) 退化作用 (Regression)"
+        ],
+        answer: "C",
+        explanation: "合理化作用(包含酸葡萄心理與甜檸檬心理)是指個體為自己無法達成目標或遭受挫折，尋找看似合理但其實是藉口的理由，藉此掩飾自己的失敗並減輕自尊受損的焦慮。"
+    },
+    {
+        id: "107-16",
+        year: "107",
+        no: 16,
+        category: "教育心理學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "德西(E. Deci)與萊恩(R. Ryan)提出的「自我決定論」(Self-Determination Theory)認為，人類與生俱來有三種基本的心理需求，若能被滿足，將能極大化學生的內在動機。這三種需求為？",
+        options: [
+            "(A) 生理、安全、愛與隸屬",
+            "(B) 勝任感 (Competence)、自主性 (Autonomy)、關連性 (Relatedness)",
+            "(C) 成就、權力、親和",
+            "(D) 生存、關係、成長 (ERG)"
+        ],
+        answer: "B",
+        explanation: "自我決定論的三大心理需求為：自主(自己有選擇的自由與控制權)、勝任(覺得自己有能力完成挑戰)、關連(與他人有良好互動、被接納的連結感)。"
+    },
+    {
+        id: "107-17",
+        year: "107",
+        no: 17,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "在機率教學中，學生認為「丟擲一枚公正硬幣，如果已經連續出現 5 次正面，那麼第 6 次出現反面的機率一定會大於正面，因為正反面出現次數應該要平衡」。這反映了學生的何種迷思？",
+        options: [
+            "(A) 獨立事件的誤解 (賭徒謬誤 / Gambler's fallacy)",
+            "(B) 互斥事件的誤解",
+            "(C) 條件機率的誤解",
+            "(D) 幾何機率的誤解"
+        ],
+        answer: "A",
+        explanation: "賭徒謬誤是指誤以為過去的「獨立」隨機事件會影響未來的機率。硬幣沒有記憶，每一次的投擲都是獨立事件，無論前面出現幾次正面，下一次出現正反面的理論機率永遠是 1/2。"
+    },
+    {
+        id: "107-18",
+        year: "107",
+        no: 18,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "國中幾何教授「三角形兩邊之和大於第三邊」時，教師請學生拿出長度分別為 3cm, 4cm, 8cm 的三根吸管，試圖拼成一個三角形。學生實作後發現無法閉合。此教學活動主要在提供學生何種學習經驗？",
+        options: [
+            "(A) 透過反例(Counterexample)建立幾何限制條件的具體經驗",
+            "(B) 演繹邏輯的嚴密證明",
+            "(C) 畢氏定理的應用",
+            "(D) 尺規作圖的標準程序"
+        ],
+        answer: "A",
+        explanation: "透過實際操作無法拼成三角形的具體「反例」(3+4 < 8)，能讓學生直觀且深刻體會到三角形構成的邊長限制條件，比單純背誦定理更有意義。"
+    },
+    {
+        id: "107-19",
+        year: "107",
+        no: 19,
+        category: "教育哲學",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "哪一種教育哲學思潮強烈批判「客觀真理」與「宏大敘事」(Grand narratives)，強調知識是權力建構的結果，並提倡尊重邊緣、多元與差異性？",
+        options: [
+            "(A) 永恆主義",
+            "(B) 實用主義",
+            "(C) 後現代主義 (Postmodernism)",
+            "(D) 邏輯實證主義"
+        ],
+        answer: "C",
+        explanation: "後現代主義代表人物如李歐塔(Lyotard)、傅柯(Foucault)等，主張解構權威，反對單一真理標準(反基礎主義)，重視弱勢邊緣聲音，尊重多元文化與差異性。"
+    },
+    {
+        id: "107-20",
+        year: "107",
+        no: 20,
+        category: "課程與教學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "艾斯納(E. Eisner)在課程目標的分類中，提出一種目標是「不預先設定學生學習後的單一標準結果，而是鼓勵學生在教育情境中展現多元、獨特的作品或見解」。此種目標稱為？",
+        options: [
+            "(A) 行為目標 (Behavioral objectives)",
+            "(B) 解決問題目標 (Problem-solving objectives)",
+            "(C) 表現性目標 (Expressive objectives)",
+            "(D) 認知目標 (Cognitive objectives)"
+        ],
+        answer: "C",
+        explanation: "表現性目標(或稱表意目標)不規定學生最後必須學到一模一樣的行為，而是提供一個豐富的情境(如參觀博物館、藝術創作)，讓學生自由發揮並產出獨特、無法事先預測的見解或作品。"
+    },
+    {
+        id: "107-21",
+        year: "107",
+        no: 21,
+        category: "教育心理學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "教師在教導學生解複雜的數學應用題時，先示範解題步驟，接著提供部分提示讓學生嘗試，最後在學生能獨立解題時逐漸撤除提示。此種教學策略稱為何？",
+        options: [
+            "(A) 鷹架支持 (Scaffolding)",
+            "(B) 交互教學法 (Reciprocal teaching)",
+            "(C) 編序教學法 (Programmed instruction)",
+            "(D) 發現學習法 (Discovery learning)"
+        ],
+        answer: "A",
+        explanation: "鷹架支持(Scaffolding)源自維高斯基的理論，指成人或能力較佳的同儕在學習者無法獨立完成任務時，提供適當的協助或提示；當學習者能力提升後，再逐漸撤除(fading)這些支援，讓其獨立完成。"
+    },
+    {
+        id: "107-22",
+        year: "107",
+        no: 22,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "國中幾何教學中，教導「角平分線」的性質時，學生除了要知道角平分線將一個角平分成兩個相等的角之外，還必須理解其在哪一種「軌跡」上的幾何意義？",
+        options: [
+            "(A) 到線段兩端點等距離的點所形成的圖形",
+            "(B) 到角的兩邊等距離的點所形成的圖形",
+            "(C) 到圓心等距離的點所形成的圖形",
+            "(D) 到三角形三頂點等距離的點所形成的圖形"
+        ],
+        answer: "B",
+        explanation: "角平分線的軌跡意義是「角平分線上一點，到角的兩邊距離相等」。這在後續證明三角形內心（三內角平分線交點）到三邊等距離時是不可或缺的關鍵概念。選項(A)為中垂線的軌跡意義。"
+    },
+    {
+        id: "107-23",
+        year: "107",
+        no: 23,
+        category: "課程與教學",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "英國學者史北克(M. Skilbeck)提出的課程設計模式，主張課程設計不應從既定的目標開始，而是應該先分析學校內外環境與資源。此模式稱為？",
+        options: [
+            "(A) 目標模式",
+            "(B) 歷程模式",
+            "(C) 情境模式 (Situation model)",
+            "(D) 實用模式"
+        ],
+        answer: "C",
+        explanation: "史北克的情境模式強調學校本位，課程設計的第一步必須是「情境分析」(分析社會文化、學生需求、學校資源等)，以此作為發展課程的基礎，比目標模式更具彈性且貼近實際。"
+    },
+    {
+        id: "107-24",
+        year: "107",
+        no: 24,
+        category: "教育心理學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "桑代克(E. Thorndike)的學習定律中，認為如果個體的反應能夠帶來滿足或愉快的結果，則該反應與刺激之間的連結就會增強。此一定律稱為？",
+        options: [
+            "(A) 準備律 (Law of readiness)",
+            "(B) 練習律 (Law of exercise)",
+            "(C) 效果律 (Law of effect)",
+            "(D) 接近律 (Law of contiguity)"
+        ],
+        answer: "C",
+        explanation: "桑代克的三大學習定律包含準備律、練習律與效果律。其中「效果律」強調行為的後果(滿意或不滿意)決定了刺激與反應聯結的強度，這也是後來斯金納「操作制約」的理論基礎。"
+    },
+    {
+        id: "107-25",
+        year: "107",
+        no: 25,
+        category: "教育測驗與評量",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "針對紙筆測驗無法評量出學生實際操作能力的問題，近年來教育界推廣讓學生透過實際展演、實驗操作、口頭報告或作品展示來進行評量。此種評量方式統稱為？",
+        options: [
+            "(A) 標準化測驗",
+            "(B) 實作評量 (Performance assessment)",
+            "(C) 常模參照評量",
+            "(D) 動態評量"
+        ],
+        answer: "B",
+        explanation: "實作評量強調「做中評」，要求學生在真實或模擬的情境中，透過實際完成一項任務或產出作品，來展現他們解決問題與應用知識的能力，能彌補傳統紙筆測驗的不足。"
+    },
+    {
+        id: "107-26",
+        year: "107",
+        no: 26,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "在教授乘法公式 (a+b)² = a² + 2ab + b² 時，教師繪製了一個邊長為 (a+b) 的大正方形，並將其切割成四個部分。此教學法主要是運用何種表徵來幫助學生理解代數公式？",
+        options: [
+            "(A) 統計長條圖表徵",
+            "(B) 面積幾何表徵",
+            "(C) 函數圖形表徵",
+            "(D) 數線表徵"
+        ],
+        answer: "B",
+        explanation: "透過邊長為 (a+b) 的正方形面積，將其分割為一個邊長a的正方形(a²)、一個邊長b的正方形(b²)，以及兩個長a寬b的長方形(2ab)，能將抽象的代數展開式轉化為具象的「面積拼圖」，屬於幾何表徵。"
+    },
+    {
+        id: "107-27",
+        year: "107",
+        no: 27,
+        category: "教育社會學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "認為社會地位與財富的分配，應該完全取決於個人的「天賦能力」加上「後天努力」，而非出身背景或世襲。此種社會學概念稱為？",
+        options: [
+            "(A) 社會主義 (Socialism)",
+            "(B) 功績主義 (Meritocracy)",
+            "(C) 資本主義 (Capitalism)",
+            "(D) 文化再製 (Cultural reproduction)"
+        ],
+        answer: "B",
+        explanation: "功績主義(或稱績效主義、才幹主義)主張個人的成就應基於自身的才能與努力(IQ + Effort = Merit)，學校教育在此體系中扮演了篩選與分配人才的公平機制角色。"
+    },
+    {
+        id: "107-28",
+        year: "107",
+        no: 28,
+        category: "輔導與諮商",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "在輔導學生的過程中，輔導教師問：「想像今天晚上你睡著後，發生了一個奇蹟，你現在面臨的困難都解決了。明天早上醒來，你會發現生活有什麼不一樣？」此技巧屬於哪一種諮商學派的常用問句？",
+        options: [
+            "(A) 精神分析學派 (Psychoanalysis)",
+            "(B) 個人中心治療 (Person-centered therapy)",
+            "(C) 焦點解決短期諮商 (SFBT)",
+            "(D) 現實治療 (Reality therapy)"
+        ],
+        answer: "C",
+        explanation: "「奇蹟問句」(Miracle question)是焦點解決短期諮商(SFBT)的核心技術之一。它不深究問題的成因，而是引導當事人跳脫困境，直接描繪問題解決後的願景，從而找出改變的目標與動力。"
+    },
+    {
+        id: "107-29",
+        year: "107",
+        no: 29,
+        category: "特殊教育",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "某位國中生智力正常，但閱讀時常會跳行、漏字，且無法分辨外觀相似的字體（例如將 b 看成 d，把「部」看成「陪」）。這名學生最可能屬於哪一類特殊需求學生？",
+        options: [
+            "(A) 智能障礙 (Intellectual disability)",
+            "(B) 學習障礙 (Learning disability)",
+            "(C) 自閉症光譜障礙 (ASD)",
+            "(D) 視覺障礙 (Visual impairment)"
+        ],
+        answer: "B",
+        explanation: "學習障礙學生通常智力正常，但在聽、說、讀、寫、算等特定學習領域出現顯著困難。題目描述的跳行、漏字、鏡像字混淆，屬於學習障礙中的「閱讀障礙」(Dyslexia)或識字困難特徵。"
+    },
+    {
+        id: "107-30",
+        year: "107",
+        no: 30,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "在引導學生推導「n 邊形內角和公式為 (n-2) × 180°」時，最標準且具啟發性的幾何切割策略為何？",
+        options: [
+            "(A) 從多邊形內部任取一點，向各頂點連線，切割出 n 個三角形",
+            "(B) 從多邊形的一個固定頂點，向其他不相鄰的頂點畫對角線",
+            "(C) 將多邊形切割成若干個正方形與長方形",
+            "(D) 利用量角器實際測量所有內角並求平均"
+        ],
+        answer: "B",
+        explanation: "從一個固定頂點畫對角線，可以將 n 邊形切割成 (n-2) 個不重疊的三角形。因為每個三角形內角和為 180°，所以總內角和即為 (n-2) × 180°。這是最直觀且嚴謹的推導方式。"
+    },
+    {
+        id: "107-31",
+        year: "107",
+        no: 31,
+        category: "教育哲學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "批判進步主義過於放任兒童、忽視學科系統知識，進而提倡「回到基本能力」(Back to basics)，主張教育應教導讀、寫、算等基本學科要素的教育思潮為？",
+        options: [
+            "(A) 存在主義 (Existentialism)",
+            "(B) 建構主義 (Constructivism)",
+            "(C) 精粹主義 (Essentialism)",
+            "(D) 浪漫自然主義 (Romantic naturalism)"
+        ],
+        answer: "C",
+        explanation: "精粹主義(Essentialism)認為人類文化有其核心的「精華」(如基礎學科、讀寫算能力)，教育的任務就是將這些基本知識傳授給下一代，反對進步主義過度強調兒童興趣而降低了學術標準。"
+    },
+    {
+        id: "107-32",
+        year: "107",
+        no: 32,
+        category: "教育心理學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "奧蘇貝爾(D. Ausubel)提倡「有意義的學習」。他建議教師在介紹新單元或新概念前，先提供一個具有較高抽象性、概括性與包容性的引導材料，以幫助學生將新知識與舊知識產生連結。此材料稱之為？",
+        options: [
+            "(A) 增強物 (Reinforcer)",
+            "(B) 前導組織 (Advance organizer)",
+            "(C) 學習鷹架 (Scaffold)",
+            "(D) 心智圖 (Mind map)"
+        ],
+        answer: "B",
+        explanation: "前導組織(Advance organizer)是奧蘇貝爾理論的核心。它是在正式學習新材料前，提供給學生的一種引導性結構，作用在於搭建舊知識與新知識之間的橋樑，促進知識的同化。"
+    },
+    {
+        id: "107-33",
+        year: "107",
+        no: 33,
+        category: "課程與教學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "我國十二年國民基本教育(108課綱)的核心素養發展，是以哪三個基本理念為核心主軸？",
+        options: [
+            "(A) 德智、體群、美育",
+            "(B) 自發、互動、共好",
+            "(C) 認知、情意、技能",
+            "(D) 創新、卓越、多元"
+        ],
+        answer: "B",
+        explanation: "108課綱以「自發」、「互動」、「共好」為三大基本理念。期望學生能自發主動學習，與他人及環境良好互動，進而達到社會與全球的共好願景。"
+    },
+    {
+        id: "107-34",
+        year: "107",
+        no: 34,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "國中數學教授相似圖形時，若甲、乙兩個相似三角形的邊長比為 2：3，學生常誤以為面積比也是 2：3。教師應如何導正此觀念？",
+        options: [
+            "(A) 告訴學生面積比等於長度比的平方，即 4：9",
+            "(B) 告訴學生面積比等於長度比的立方，即 8：27",
+            "(C) 說明面積與長度無關，需重新計算",
+            "(D) 說明只有直角三角形才有面積比的性質"
+        ],
+        answer: "A",
+        explanation: "長度是一維的，面積是二維的。當相似圖形的對應邊長(長度)放大或縮小 k 倍時，其底與高都會同時改變 k 倍，因此面積的變化率為 k 的平方倍。邊長比 2:3，面積比為 2²:3² = 4:9。"
+    },
+    {
+        id: "107-35",
+        year: "107",
+        no: 35,
+        category: "班級經營",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "德瑞克斯(R. Dreikurs)認為兒童的不良行為通常有四個潛藏的錯誤目標。當學生公開頂撞老師，拒絕服從指令，試圖證明「老師你管不了我」時，這屬於哪一個錯誤目標？",
+        options: [
+            "(A) 尋求注意 (Attention getting)",
+            "(B) 爭奪權力 (Power seeking)",
+            "(C) 尋求報復 (Revenge)",
+            "(D) 顯露無能 (Displaying inadequacy)"
+        ],
+        answer: "B",
+        explanation: "德瑞克斯的四個錯誤目標為：尋求注意(作怪引人看)、爭奪權力(抗拒權威、證明自己老大)、報復(受傷後想傷害別人)、顯露無能(徹底放棄)。公開頂撞並挑戰老師權威，屬於「爭奪權力」。"
+    },
+    {
+        id: "107-36",
+        year: "107",
+        no: 36,
+        category: "教育測驗與評量",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "學生的會考成績單上若標示某科的「百分等級 (PR值)」為 85，其所代表的統計意義為何？",
+        options: [
+            "(A) 該生在該科目答對了 85% 的題目",
+            "(B) 該生在該科目得到 85 分",
+            "(C) 該生的表現勝過全體考生中約 85% 的人",
+            "(D) 該生距離滿分還有 15 分的差距"
+        ],
+        answer: "C",
+        explanation: "百分等級(Percentile Rank, PR值)是一種相對地位量數。PR=85 代表在 100 個樣本中，該考生的成績贏過(或等於) 85 個人，屬於相對排名前 15% 的水準。"
+    },
+    {
+        id: "107-37",
+        year: "107",
+        no: 37,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "國中代數教學中，學生常混淆「方程式」與「恆等式」的概念。下列哪一個式子是「恆等式」？",
+        options: [
+            "(A) 2x + 3 = 7",
+            "(B) x² - 4 = 0",
+            "(C) 2(x + 3) = 2x + 6",
+            "(D) 3x - 1 > 5"
+        ],
+        answer: "C",
+        explanation: "「方程式」(如A, B)只有在未知數代入特定數值時等號才會成立。「恆等式」(如C)則是對未知數代入『任何』數值，等號永遠成立。選項D為不等式。"
+    },
+    {
+        id: "107-38",
+        year: "107",
+        no: 38,
+        category: "教育社會學",
+        frequencyLabel: "低",
+        frequencyValue: 1,
+        question: "社會學家韋伯(M. Weber)將權威分為三種類型。現代學校中，校長與教師的職權是基於國家教育法規與制度所賦予的。這屬於哪一種權威？",
+        options: [
+            "(A) 傳統型權威 (Traditional authority)",
+            "(B) 奇里斯瑪型/魅力型權威 (Charismatic authority)",
+            "(C) 合法合理型權威 (Legal-rational authority)",
+            "(D) 專業型權威"
+        ],
+        answer: "C",
+        explanation: "韋伯的三大權威類型：1.傳統型(基於世襲或傳統，如君王)；2.魅力型/奇里斯瑪型(基於個人非凡魅力，如宗教領袖)；3.合法合理型(基於明文法規與科層體制，如現代官僚、校長職權)。"
+    },
+    {
+        id: "107-39",
+        year: "107",
+        no: 39,
+        category: "教育心理學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "班杜拉(A. Bandura)的觀察學習(社會學習)歷程包含四個階段。學生看見同學因為幫忙打掃而受到老師當眾表揚後，決定隔天也主動打掃。這主要反映了哪一個階段的作用？",
+        options: [
+            "(A) 注意 (Attention)",
+            "(B) 保持/保留 (Retention)",
+            "(C) 再生 (Reproduction)",
+            "(D) 動機 (Motivation)"
+        ],
+        answer: "D",
+        explanation: "觀察學習四階段：注意(看到行為) $\\rightarrow$ 保持(記在腦中) $\\rightarrow$ 再生(有能力做出來) $\\rightarrow$ 動機(因為看到榜樣受獎勵而產生自己也去做的意願，即替代性增強)。"
+    },
+    {
+        id: "107-40",
+        year: "107",
+        no: 40,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "在教授機率時，若一個箱子裡有 3 顆紅球與 2 顆白球。學生抽出 1 顆球「不放回」，再抽出第 2 顆球。若要求「兩顆都是紅球」的機率，教師應引導學生使用下列何種概念來計算？",
+        options: [
+            "(A) 獨立事件的機率相乘",
+            "(B) 互斥事件的機率相加",
+            "(C) 條件機率的連乘 (3/5 × 2/4)",
+            "(D) 期望值的計算"
+        ],
+        answer: "C",
+        explanation: "因為「不放回」，所以第二次抽球時箱內的球數與顏色比例已經改變。第二次抽出紅球的機率受到第一次結果的影響，屬於條件機率。計算方式為：(第一次抽紅機率 3/5) × (第二次在剩下4顆中抽紅機率 2/4)。"
+    },
+    {
+        id: "107-41",
+        year: "107",
+        no: 41,
+        category: "教育社會學",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "伯恩斯坦(B. Bernstein)將教學法分為「可見的」(Visible)與「不可見的」(Invisible)。傳統重視學科界線、師生階層分明與嚴格客觀評量的教學屬於何者？",
+        options: [
+            "(A) 可見的教學法",
+            "(B) 不可見的教學法",
+            "(C) 統整的教學法",
+            "(D) 懸缺的教學法"
+        ],
+        answer: "A",
+        explanation: "伯恩斯坦認為，可見的教學法具有強分類(學科界線分明)與強架構(教師主導控制)，多為傳統教學模式與中產階級偏好；不可見教學法則是弱分類與弱架構(如開放教育)。"
+    },
+    {
+        id: "107-42",
+        year: "107",
+        no: 42,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "教師在講解「將分數化為小數」時，學生發現 1/7 會變成無限循環小數 0.142857...。這背後的數學原理與下列哪一個概念最相關？",
+        options: [
+            "(A) 輾轉相除法",
+            "(B) 鴿籠原理 (Pigeonhole principle)",
+            "(C) 勘根定理",
+            "(D) 畢氏定理"
+        ],
+        answer: "B",
+        explanation: "當除數為 7 時，每次相除的餘數只能是 1 到 6（共 6 種可能）。根據鴿籠原理，當我們進行到第 7 次除法時，必然會出現與前面重複的餘數，因此小數點後的數字必定會開始循環。"
+    },
+    {
+        id: "107-43",
+        year: "107",
+        no: 43,
+        category: "課程與教學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "依據泰勒(R. Tyler)的課程理論，選擇學習經驗時應符合某些基本原則。若強調「必須讓學生有機會實際去實踐該目標所隱含的行為」，這是屬於哪一個原則？",
+        options: [
+            "(A) 練習原則",
+            "(B) 效果原則",
+            "(C) 能力原則",
+            "(D) 彈性原則"
+        ],
+        answer: "A",
+        explanation: "泰勒選擇學習經驗的原則中，「練習原則」是指必須讓學生有機會親自去「做」目標中所期望的行為；「效果原則」則是學生在做該行為時能獲得滿足感。"
+    },
+    {
+        id: "107-44",
+        year: "107",
+        no: 44,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "國中數學教授「三角形兩邊中點連線性質：必平行於第三邊且長度為第三邊的一半」。此性質最適合用下列哪一個幾何定理來進行推導與證明？",
+        options: [
+            "(A) 畢氏定理",
+            "(B) 圓冪定理",
+            "(C) 相似三角形性質 (SAS相似)",
+            "(D) 孟氏定理"
+        ],
+        answer: "C",
+        explanation: "連接兩邊中點形成的小三角形，與原大三角形共用一個頂角，且夾此角的兩邊成 1:2 的比例。根據 SAS 相似性質，兩三角形相似，故對應角相等（證明平行）且底邊長度比亦為 1:2。"
+    },
+    {
+        id: "107-45",
+        year: "107",
+        no: 45,
+        category: "教育心理學",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "斯騰伯格(R. Sternberg)提出智力三元論(Triarchic theory of intelligence)，認為智力包含分析智力、實用智力，以及能處理新情境與自動化訊息的何種智力？",
+        options: [
+            "(A) 空間智力",
+            "(B) 創造智力 (經驗智力)",
+            "(C) 內省智力",
+            "(D) 邏輯智力"
+        ],
+        answer: "B",
+        explanation: "斯騰伯格的智力三元論包含：1.分析/成分智力(學業、解題能力)、2.創造/經驗智力(應付新情境、將經驗自動化)、3.實用/情境智力(適應環境的街頭智慧)。"
+    },
+    {
+        id: "107-46",
+        year: "107",
+        no: 46,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "在教導機率時，若同時投擲兩顆公正骰子，學生常誤以為「點數和為 2」與「點數和為 3」的機率是一樣的。教師應引導學生畫出何種圖表來釐清樣本空間？",
+        options: [
+            "(A) 圓餅圖",
+            "(B) 樹狀圖或二維表格",
+            "(C) 長條圖",
+            "(D) 散佈圖"
+        ],
+        answer: "B",
+        explanation: "畫出 6x6 的二維表格能清楚列出 36 個樣本點。學生會看出「和為 2」只有 (1,1) 一種組合；但「和為 3」有 (1,2) 與 (2,1) 兩種組合，藉此釐清各事件發生機率不相等的迷思。"
+    },
+    {
+        id: "107-47",
+        year: "107",
+        no: 47,
+        category: "班級經營",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "高登(T. Gordon)提倡的「教師效能訓練」中，當師生發生需求衝突時，主張使用什麼方法來解決，使雙方都能接受結果而沒有輸家？",
+        options: [
+            "(A) 教師權威壓制",
+            "(B) 學生多數決",
+            "(C) 雙贏策略 (無敗法 / No-lose method)",
+            "(D) 忽視法"
+        ],
+        answer: "C",
+        explanation: "高登的無敗法(No-lose method)即雙贏策略，強調師生共同腦力激盪找出解決方案，並透過協商找到彼此都能接受的方法，不依賴權威也不放任。"
+    },
+    {
+        id: "107-48",
+        year: "107",
+        no: 48,
+        category: "特殊教育",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "依據我國《身心障礙及資賦優異學生鑑定辦法》，某生在語言、記憶、聽覺理解等認知能力表現正常，但無法順利進行數學加減法運算，嚴重落後同儕。該生最可能屬於何種特殊教育類別？",
+        options: [
+            "(A) 智能障礙",
+            "(B) 學習障礙 (數學障礙)",
+            "(C) 自閉症",
+            "(D) 聽覺障礙"
+        ],
+        answer: "B",
+        explanation: "學習障礙是指智力正常，但因為神經心理功能異常而顯現出聽、說、讀、寫、算等學習上的顯著困難。此題特徵符合學習障礙中的「數學障礙」。"
+    },
+    {
+        id: "107-49",
+        year: "107",
+        no: 49,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "學生在學習代數運算時，常將「2a + 3b」錯誤地合併為「5ab」。這種迷思主要源於學生未能理解代數符號的何種基本法則？",
+        options: [
+            "(A) 同類項才能合併的運算法則",
+            "(B) 分配律",
+            "(C) 交換律",
+            "(D) 指數律"
+        ],
+        answer: "A",
+        explanation: "學生將算術中「2隻貓+3隻狗=5隻動物」的總數直觀概念套用在代數上，未能理解在代數運算中，代表不同變數的「不同類項」是無法直接將係數相加並合併符號的。"
+    },
+    {
+        id: "107-50",
+        year: "107",
+        no: 50,
+        category: "教育測驗與評量",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "若要評估一份國中數學成就測驗的「穩定性」，亦即學生在不同時間接受同一份測驗的分數一致性，應計算下列哪一種信度？",
+        options: [
+            "(A) 重測信度 (Test-retest reliability)",
+            "(B) 複本信度",
+            "(C) 折半信度",
+            "(D) 庫李信度"
+        ],
+        answer: "A",
+        explanation: "重測信度是將「同一份測驗」在「不同時間」對同一批受試者施測兩次，計算兩次分數的相關係數，用以評估測驗結果跨時間的穩定性。"
+    },
+    {
+        id: "106-01",
+        year: "106",
+        no: 1,
+        category: "教育哲學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "杜威(J. Dewey)在《民主與教育》一書中認為「教育的過程與結果是一致的，教育沒有外在的目的」。這句話最能反映他哪一個著名的教育主張？",
+        options: [
+            "(A) 教育即生活",
+            "(B) 教育即生長",
+            "(C) 教育即經驗的重組",
+            "(D) 學校即社會"
+        ],
+        answer: "B",
+        explanation: "「教育即生長」強調生長本身就是目的，教育的歷程就是不斷生長與發展的歷程，不應將教育視為替未來做準備的工具，教育除了自身之外沒有其他外在目的。"
+    },
+    {
+        id: "106-02",
+        year: "106",
+        no: 2,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "國中數學教師在數線上標出 1/3 與 1/2 兩點後，詢問學生這兩點之間還有多少個分數。學生回答「沒有了」。這顯示學生缺乏有理數的何種概念？",
+        options: [
+            "(A) 封閉性",
+            "(B) 遞移性",
+            "(C) 稠密性 (Denseness)",
+            "(D) 交換性"
+        ],
+        answer: "C",
+        explanation: "有理數的「稠密性」是指在數線上任意兩個相異的有理數之間，必定還存在著無限多個有理數（例如 (1/3 + 1/2) ÷ 2 = 5/12 就介於兩者之間）。學生常受整數離散性的影響而產生迷思。"
+    },
+    {
+        id: "106-03",
+        year: "106",
+        no: 3,
+        category: "教育心理學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "根據皮亞傑(J. Piaget)的道德發展論，七歲以下的兒童通常認為規則是由權威(如父母、老師)制定的，絕對不可改變。這屬於哪一個階段？",
+        options: [
+            "(A) 無律期",
+            "(B) 他律期 (Heteronomous morality)",
+            "(C) 自律期 (Autonomous morality)",
+            "(D) 道德成規期"
+        ],
+        answer: "B",
+        explanation: "他律期(約5-8歲)的兒童具備「道德實在論」，認為規則是外在權威制定的、神聖不可侵犯的，且常以行為的後果嚴重性(而非動機)來判斷對錯。"
+    },
+    {
+        id: "106-04",
+        year: "106",
+        no: 4,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "學生在學習畢氏定理 a² + b² = c² 時，常誤以為「任何三角形的三邊都滿足此關係」。教師應如何設計教學以導正此迷思？",
+        options: [
+            "(A) 直接處罰算錯的學生",
+            "(B) 讓學生實際測量銳角與鈍角三角形的三邊長並進行代數驗證，產生認知衝突",
+            "(C) 讓學生抄寫公式 10 遍",
+            "(D) 教導三角函數的餘弦定理"
+        ],
+        answer: "B",
+        explanation: "破除迷思概念最有效的方法是提供「反例」引發認知衝突。讓學生親自驗證銳角三角形(a²+b²>c²)或鈍角三角形(a²+b²<c²)，能幫助他們深刻意識到畢氏定理僅適用於直角三角形。"
+    },
+    {
+        id: "106-05",
+        year: "106",
+        no: 5,
+        category: "課程與教學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "傑克森(P. Jackson)在其著作《班級生活》中，首度提出學生在學校常規、群眾生活及權力關係中，不知不覺學到的態度與價值觀。此概念稱為？",
+        options: [
+            "(A) 懸缺課程",
+            "(B) 正式課程",
+            "(C) 非正式課程",
+            "(D) 潛在課程 (Hidden curriculum)"
+        ],
+        answer: "D",
+        explanation: "傑克森提出的「潛在課程」是指學校中未明文規定、但透過班級情境、師生互動與學校制度，潛移默化影響學生價值觀的學習經驗(如排隊、服從、安靜)。"
+    },
+    {
+        id: "106-06",
+        year: "106",
+        no: 6,
+        category: "教育社會學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "布迪爾(P. Bourdieu)提出，個體透過家庭社會化過程，將客觀的社會結構內化為個人主觀的性情傾向與行為模式。這個概念稱之為？",
+        options: [
+            "(A) 文化資本 (Cultural capital)",
+            "(B) 社會流動",
+            "(C) 慣習 (Habitus)",
+            "(D) 符號暴力 (Symbolic violence)"
+        ],
+        answer: "C",
+        explanation: "慣習(Habitus)是布迪爾的重要概念，指個體在特定社會階層中長期潛移默化養成的一套性情、品味與行為傾向。它讓不同階級的人表現出不同的文化氣質。"
+    },
+    {
+        id: "106-07",
+        year: "106",
+        no: 7,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "學生常問「為什麼數學中規定除數不能為 0？」教師若要用國中代數觀念來解釋 a ÷ 0 無意義，最適合的說理方式為何？",
+        options: [
+            "(A) 規定就是規定，不用解釋",
+            "(B) 因為 0 太小了無法作為除數",
+            "(C) 利用乘除互逆關係，探討當 k × 0 = a 時無法找到唯一解",
+            "(D) 利用極限概念說明其結果為無限大"
+        ],
+        answer: "C",
+        explanation: "國中生尚未學過極限，最適合用「乘除互逆」來說明。若 a ÷ 0 = k，則 k × 0 必須等於 a。但任何數乘 0 都是 0。若 a≠0，找不到這種 k；若 a=0，k 可以是任何數，無法得到唯一解。因此規定除數不能為 0。"
+    },
+    {
+        id: "106-08",
+        year: "106",
+        no: 8,
+        category: "輔導與諮商",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "國中生因為在學校被老師責罵，回家後不敢對老師發脾氣，便無故對家裡的狗或弟弟發洩。這種將對強者的不滿情緒轉移到較弱者身上的防衛機制稱為？",
+        options: [
+            "(A) 昇華作用 (Sublimation)",
+            "(B) 投射作用 (Projection)",
+            "(C) 退化作用 (Regression)",
+            "(D) 替代作用 / 轉移 (Displacement)"
+        ],
+        answer: "D",
+        explanation: "替代作用(Displacement，又稱轉移作用)是指個體將對某對象的情緒(通常是憤怒或攻擊)，轉移到另一個較安全、不會帶來危險的替代對象上。"
+    },
+    {
+        id: "106-09",
+        year: "106",
+        no: 9,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "在教授「函數圖形」時，教師教導學生使用「鉛直線測試法(Vertical line test)」來判斷一個圖形是否為函數。此測試法主要是為了檢驗函數定義中的哪一個條件？",
+        options: [
+            "(A) 每個 x 值最多只能對應到一個 y 值 (一對一或多對一)",
+            "(B) 每個 y 值最多只能對應到一個 x 值",
+            "(C) 圖形必須是連續不斷的直線",
+            "(D) 圖形必須通過原點"
+        ],
+        answer: "A",
+        explanation: "函數的嚴格定義是「每一個定義域內的 x，都恰好對應到唯一的一個 y」。在座標平面上，若畫一條鉛直線(即固定 x 值)與圖形交於兩個點以上，代表一個 x 對應到多個 y，違反函數定義。"
+    },
+    {
+        id: "106-10",
+        year: "106",
+        no: 10,
+        category: "教育行政與法規",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "近年來學校積極推動「教師專業學習社群」(Professional Learning Community, PLC)，其最核心的運作特徵為何？",
+        options: [
+            "(A) 以爭取學校更多經費為主要目的",
+            "(B) 聚焦於學生的學習成效，教師透過協同合作與共同探究來持續改進教學",
+            "(C) 為了應付教育局的外部評鑑而設立的臨時編組",
+            "(D) 讓教師互相批鬥與考核績效的組織"
+        ],
+        answer: "B",
+        explanation: "PLC的核心精神是「以學生學習為中心」、「協同合作」與「持續探究」。教師們自發組成社群，共同備課、觀課、議課，最終目的是提升學生的學習成效。"
+    },
+    {
+        id: "106-11",
+        year: "106",
+        no: 11,
+        category: "教育心理學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "皮亞傑(J. Piaget)認知發展論中，兒童能夠理解「即使物體的外表形狀發生改變，但其本質的數量、重量或體積仍然保持不變」。這種能力稱之為何？",
+        options: [
+            "(A) 物體恆存 (Object permanence)",
+            "(B) 守恆概念 (Conservation)",
+            "(C) 延宕模仿 (Deferred imitation)",
+            "(D) 萬物有靈論 (Animism)"
+        ],
+        answer: "B",
+        explanation: "守恆概念(Conservation)是具體運思期的重要特徵，指兒童能理解某物體的物理特徵(如水量、黏土體積)不因其外在形狀或排列方式的改變而有所增減。物體恆存則是感覺動作期的特徵。"
+    },
+    {
+        id: "106-12",
+        year: "106",
+        no: 12,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "在解二元一次聯立方程式時，學生解出「0 = 0」的結果，卻不知如何寫下答案。教師應引導學生理解這在幾何圖形上代表兩條直線呈現何種關係？",
+        options: [
+            "(A) 兩直線互相垂直",
+            "(B) 兩直線互相平行 (無解)",
+            "(C) 兩直線重合 (無限多組解)",
+            "(D) 兩直線交於原點"
+        ],
+        answer: "C",
+        explanation: "當代數推導出恆等式「0 = 0」時，代表這兩個方程式實際上是等價的。在幾何圖形上，這兩條直線完全重疊在一起，因此有「無限多個交點」，即無限多組解。"
+    },
+    {
+        id: "106-13",
+        year: "106",
+        no: 13,
+        category: "教育社會學",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "批判現代學校制度淪為發放文憑的機器，阻礙了真正的學習，進而提倡廢除僵化的學校體制，主張建立「學習網絡」(Learning webs)的學者是誰？",
+        options: [
+            "(A) 杜威 (J. Dewey)",
+            "(B) 伊利希 (I. Illich)",
+            "(C) 涂爾幹 (E. Durkheim)",
+            "(D) 馬克思 (K. Marx)"
+        ],
+        answer: "B",
+        explanation: "伊利希(Ivan Illich)在《非學校化社會》(Deschooling Society)一書中，強烈批判制度化的學校教育，主張廢除學校，改以自由、彈性的「學習網絡」(如技能交換、同儕配對)來取代。"
+    },
+    {
+        id: "106-14",
+        year: "106",
+        no: 14,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "國中幾何教學中，教師引導學生推導「三角形的外角定理」（三角形任一外角等於其兩個內對角的和）。下列哪一個先備知識是完成此推導的『最關鍵』基礎？",
+        options: [
+            "(A) 畢氏定理",
+            "(B) 三角形內角和為 180 度，且平角為 180 度",
+            "(C) 對頂角相等",
+            "(D) 相似三角形對應角相等"
+        ],
+        answer: "B",
+        explanation: "外角定理的推導邏輯為：∠1 + ∠2 + ∠3 = 180° (內角和)；且 ∠3 + 其外角 = 180° (平角)。兩式相比即可得出：外角 = ∠1 + ∠2。因此內角和與平角概念是核心基礎。"
+    },
+    {
+        id: "106-15",
+        year: "106",
+        no: 15,
+        category: "教育哲學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "巴西教育家弗雷勒(P. Freire)在《受壓迫者教育學》中，嚴厲批判傳統教學將學生視為空容器，任由教師單向灌輸知識。他將這種壓迫式的教育稱之為？",
+        options: [
+            "(A) 提問式教育 (Problem-posing education)",
+            "(B) 囤積式教育 (Banking concept of education)",
+            "(C) 產婆法 (Maieutics)",
+            "(D) 傳統古典教育"
+        ],
+        answer: "B",
+        explanation: "弗雷勒將傳統單向灌輸的教育稱為「囤積式教育」(Banking education，宛如把知識當成錢存進學生的腦袋銀行裡)。他提倡應改用師生平等的「提問式教育」(Problem-posing education)來啟發批判意識。"
+    },
+    {
+        id: "106-16",
+        year: "106",
+        no: 16,
+        category: "教育測驗與評量",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "將全班學生的數學原始成績轉換為標準分數(Z分數)後，這組新的Z分數分配，其算術平均數與標準差必定為多少？",
+        options: [
+            "(A) 平均數為 50，標準差為 10",
+            "(B) 平均數為 100，標準差為 15",
+            "(C) 平均數為 0，標準差為 1",
+            "(D) 視原始成績的分配形狀而定，無法確定"
+        ],
+        answer: "C",
+        explanation: "Z分數的定義是將原始分數減去平均數後，再除以標準差。經過此線性轉換後，任何一組數據的 Z分數集合，其平均數永遠為 0，標準差永遠為 1。"
+    },
+    {
+        id: "106-17",
+        year: "106",
+        no: 17,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "在教授「期望值」時，某遊戲規則為：擲一枚公正硬幣，若出現正面可得 100 元，出現反面則輸掉 50 元。若學生計算其期望值為 25 元。這代表什麼意義？",
+        options: [
+            "(A) 玩家只要玩一次，一定會賺到 25 元",
+            "(B) 玩家如果玩兩次，保證會賺到 50 元",
+            "(C) 長期大量重複玩此遊戲時，平均每一次的獲利大約是 25 元",
+            "(D) 這是一個對莊家有利的公平遊戲"
+        ],
+        answer: "C",
+        explanation: "期望值是基於「大數法則」的概念。它並不預測單次遊戲的具體結果(因為單次只會+100或-50)，而是代表當試驗次數夠多時，「長期平均下來」每一次的預期收益。期望值>0 代表長期對玩家有利。"
+    },
+    {
+        id: "106-18",
+        year: "106",
+        no: 18,
+        category: "課程與教學",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "皮納(W. Pinar)提倡課程研究應從關注「發展(Development)」轉向「理解(Understanding)」，並提出了「羅網(Currere)」的自傳式課程方法。此觀點屬於下列何種課程典範？",
+        options: [
+            "(A) 實證主義典範",
+            "(B) 科技理性典範",
+            "(C) 再概念化學派 (Reconceptualization)",
+            "(D) 行為主義學派"
+        ],
+        answer: "C",
+        explanation: "皮納是「再概念化學派」的代表人物。他們反對泰勒目標模式的科技理性與工具主義，主張課程(Currere，拉丁文意為奔跑的過程)應是個體內在經驗的覺醒、反思與自傳式理解。"
+    },
+    {
+        id: "106-19",
+        year: "106",
+        no: 19,
+        category: "班級經營",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "庫寧(J. Kounin)的班級經營理論中，指出有效能的教師能夠在同一時間內，順暢地處理兩件以上的突發事件，而不中斷原有的教學活動(例如邊講課邊走到分心學生身旁輕敲桌面)。此技巧稱為？",
+        options: [
+            "(A) 掌握全局 (Withitness)",
+            "(B) 重疊 (Overlapping)",
+            "(C) 漣漪效應 (Ripple effect)",
+            "(D) 順暢過渡 (Smoothness)"
+        ],
+        answer: "B",
+        explanation: "「重疊」(Overlapping)是指教師具備「一心多用」的能力，能同時處理多重事務而不打斷教學節奏。這能有效降低學生的干擾行為並維持課堂的動態發展。"
+    },
+    {
+        id: "106-20",
+        year: "106",
+        no: 20,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "國中生在展開代數式「3(x - 4)」時，常寫成「3x - 4」，忘記將括號內的常數項也乘以 3。這種錯誤主要是未能熟練掌握何種數學定律？",
+        options: [
+            "(A) 結合律 (Associative property)",
+            "(B) 交換律 (Commutative property)",
+            "(C) 乘法對加減法的分配律 (Distributive property)",
+            "(D) 消去律 (Cancellation law)"
+        ],
+        answer: "C",
+        explanation: "乘法對加減法的分配律定義為 a(b+c) = ab + ac。學生在展開括號時，常只記得將外面的係數乘給第一項，而忽略了後面的項，這是在進入代數單元時極常見的「分配律」不完整迷思。"
+    },
+    {
+        id: "106-21",
+        year: "106",
+        no: 21,
+        category: "特殊教育",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "自閉症光譜障礙(ASD)學生常難以解讀他人的表情、語氣，且不易理解「別人的想法可能與自己不同」。在認知神經心理學中，這種缺乏推論他人心理狀態的能力，通常被解釋為缺乏何種機制？",
+        options: [
+            "(A) 執行功能 (Executive function)",
+            "(B) 感覺統合 (Sensory integration)",
+            "(C) 心智理論 (Theory of Mind, ToM)",
+            "(D) 中央統合缺陷 (Weak central coherence)"
+        ],
+        answer: "C",
+        explanation: "心智理論(ToM)是指個體能推測他人擁有與自己不同的信念、意圖與情緒的能力。ASD 學生常因「心智理論」缺陷，而表現出白目、缺乏同理心或難以進行社交互動的特徵。"
+    },
+    {
+        id: "106-22",
+        year: "106",
+        no: 22,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "國一教授「質數與合數」時，學生常直覺地認為「1 是一個質數」。教師要澄清這個迷思，最適合引用下列哪一個數學定理的規定來說明「為何數學家規定 1 不是質數」？",
+        options: [
+            "(A) 費馬小定理",
+            "(B) 算術基本定理 (唯一分解定理)",
+            "(C) 歐幾里得幾何公理",
+            "(D) 中間值定理"
+        ],
+        answer: "B",
+        explanation: "算術基本定理規定「任何大於1的整數，都可以『唯一』分解為質數的乘積」。如果把 1 也當作質數，那麼 6 可以寫成 2×3，也可以寫成 1×2×3 或 1×1×2×3，這樣質因數分解的「唯一性」就被破壞了。"
+    },
+    {
+        id: "106-23",
+        year: "106",
+        no: 23,
+        category: "輔導與諮商",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "在諮商輔導中，諮商師在案主對面放了一張空椅子，要求案主想像那張椅子上坐著他一直無法原諒的父親，並鼓勵案主對著空椅子表達內心壓抑的情感。此為哪一個學派的著名技術？",
+        options: [
+            "(A) 行為治療學派",
+            "(B) 認知行為學派 (CBT)",
+            "(C) 完形治療學派 (Gestalt therapy)",
+            "(D) 阿德勒學派"
+        ],
+        answer: "C",
+        explanation: "「空椅技術」(Empty chair technique)是波爾斯(F. Perls)創立的完形治療法中最具代表性的技術。旨在幫助當事人處理「未竟事宜」(Unfinished business)，整合內在衝突並宣洩壓抑的情感。"
+    },
+    {
+        id: "106-24",
+        year: "106",
+        no: 24,
+        category: "教育行政與法規",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "強調領導者不應只是進行獎懲交換，而應透過「理想化影響力、啟發性動機、智力激發、個別化關懷」這四個維度，來改變成員的價值觀並激發出超越預期的表現。此種領導模式稱為？",
+        options: [
+            "(A) 交易領導 (Transactional leadership)",
+            "(B) 轉型領導 (Transformational leadership)",
+            "(C) 僕人領導 (Servant leadership)",
+            "(D) 魅力領導 (Charismatic leadership)"
+        ],
+        answer: "B",
+        explanation: "轉型領導(Transformational leadership)由伯恩斯(Burns)提出、巴斯(Bass)發展。其核心的「4I」維度旨在提升組織成員的道德與動機層次，促使組織發生根本性的轉型與成長。"
+    },
+    {
+        id: "106-25",
+        year: "106",
+        no: 25,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "在教授「圓周率 $\\pi$」時，若學生只背誦 $\\pi \\approx 3.14$，而不了解其真實意義。教師應引導學生理解 $\\pi$ 在幾何上代表的是哪兩個量的「比值」？",
+        options: [
+            "(A) 圓面積與半徑的比值",
+            "(B) 圓周長與半徑的比值",
+            "(C) 圓周長與直徑的比值",
+            "(D) 圓面積與直徑的比值"
+        ],
+        answer: "C",
+        explanation: "圓周率 $\\pi$ 的本質定義是：在平面歐幾里得幾何中，任何一個圓的「圓周長」與其「直徑」的固定比值 (C/d = $\\pi$)。教師應讓學生透過實際測量不同大小的圓，發現此比值恆為定值的規律。"
+    },
+    {
+        id: "106-26",
+        year: "106",
+        no: 26,
+        category: "教育心理學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "在柯爾柏格(L. Kohlberg)的「漢斯偷藥」道德兩難故事中，若學生回答：「漢斯應該偷藥，因為生命權高於財產權的法律規定，法律若不合理應該被修改。」該生屬於道德發展的哪一個階段？",
+        options: [
+            "(A) 尋求認可取向 (好孩子取向)",
+            "(B) 遵守法規取向",
+            "(C) 社會契約取向",
+            "(D) 普遍倫理原則取向"
+        ],
+        answer: "C",
+        explanation: "社會契約取向(第五階段)屬於後成規期。此階段的個體認為法律是維護大眾權益的契約，但並非絕對不可侵犯；當法律與人類基本權利(如生命權)衝突時，法律是可以基於理性與多數共識來修正或挑戰的。"
+    },
+    {
+        id: "106-27",
+        year: "106",
+        no: 27,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "在二元一次不等式「2x + y < 4」的圖解教學中，教師強調必須將邊界直線畫成「虛線」而非實線。這是為了傳達哪一種數學概念？",
+        options: [
+            "(A) 該直線為圖形的對稱軸",
+            "(B) 該不等式的解集合「不包含」這條邊界直線上的點",
+            "(C) 該直線是一條漸近線",
+            "(D) 該直線的斜率為負值"
+        ],
+        answer: "B",
+        explanation: "不等號若只有「<」或「>」（沒有等號），表示邊界上的點代入會使兩邊「等於」，不符合原不等式條件。因此以「虛線」表示解的半平面區域不包含這條邊界。若為「≤」或「≥」則畫實線。"
+    },
+    {
+        id: "106-28",
+        year: "106",
+        no: 28,
+        category: "教育社會學",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "結構功能論學者柏森斯(T. Parsons)認為，現代學校教育主要具備兩大基本功能。一是將學生教導成符合社會規範的公民，另一則是依據學生的能力與性向，將其分配到社會不同的職業位置。這兩大功能分別為？",
+        options: [
+            "(A) 社會化功能；選擇與分配功能",
+            "(B) 文化傳遞功能；社會控制功能",
+            "(C) 社會再製功能；霸權建構功能",
+            "(D) 啟發批判意識功能；階級流動功能"
+        ],
+        answer: "A",
+        explanation: "柏森斯(Parsons)認為學校是社會化最重要的機構。其兩大功能為：1.社會化(Socialization)：傳遞共同的價值與規範；2.選擇與分配(Selection and Allocation)：透過考試與評量，將人才適才適所地分配到勞動市場。"
+    },
+    {
+        id: "106-29",
+        year: "106",
+        no: 29,
+        category: "課程與教學",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "畢能(J. Beane)提倡的「課程統整」設計，主張打破所有學科的界線，完全以學生的個人需求與社會關注的重大「議題」為核心來組織課程。這屬於下列何種類型的課程統整？",
+        options: [
+            "(A) 多學科統整 (Multidisciplinary)",
+            "(B) 科際統整 (Interdisciplinary)",
+            "(C) 超學科統整 (Transdisciplinary)",
+            "(D) 相關課程 (Correlated)"
+        ],
+        answer: "C",
+        explanation: "畢能(Beane)的主張屬於最高層級的「超學科統整」(Transdisciplinary integration)。它不從既定學科出發，而是直接從真實世界的生活議題切入，學科知識只是解決問題的工具，界線完全被消融。"
+    },
+    {
+        id: "106-30",
+        year: "106",
+        no: 30,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "國一學生在解比例問題：「大樹高 6 公尺，影長 4 公尺；小樹高 3 公尺，影長應為多少？」時，學生回答：「因為 6 變成 3 是減去 3，所以影長 4 減去 3，答案是 1 公尺。」這顯示學生誤用了何種推理思維？",
+        options: [
+            "(A) 誤將「乘法思維(等比概念)」錯用為「加法思維(等差概念)」",
+            "(B) 誤將正比關係當作反比關係",
+            "(C) 未能掌握交叉相乘的公式",
+            "(D) 缺乏空間幾何的視覺化能力"
+        ],
+        answer: "A",
+        explanation: "比例問題(相似形影長)本質上是倍數變化的「乘法思維」(6 變成 3 是除以 2，所以 4 也要除以 2 得到 2)。處於轉換期的學生常會退行使用較簡單的「加減法(等差)思維」來處理比例問題，這是極經典的比例迷思。"
+    },
+    {
+        id: "106-31",
+        year: "106",
+        no: 31,
+        category: "教育行政與法規",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "在教育行政與組織領導理論中，認為「沒有一種放諸四海皆準的領導方式」，領導者的效能取決於其領導風格與當時『情境』的配合程度。此為何種理論？",
+        options: [
+            "(A) 特質理論 (Trait theory)",
+            "(B) 行為理論 (Behavioral theory)",
+            "(C) 權變理論 (Contingency theory)",
+            "(D) 系統理論 (Systems theory)"
+        ],
+        answer: "C",
+        explanation: "權變理論(Contingency theory，如費德勒 Fiedler 所提出)強調「If-Then」(若在某情境，則採某策略)。它主張沒有絕對最佳的領導方式，必須根據領導者、部屬與情境變項(如任務結構、職位權力)來權變調整。"
+    },
+    {
+        id: "106-32",
+        year: "106",
+        no: 32,
+        category: "特殊教育",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "針對自閉症學生常出現的溝通困難與作息轉換焦慮，教師在教室中貼上圖卡時間表與步驟圖。這種利用自閉症學生「視覺優勢」來安排學習環境的教學策略，最接近下列哪一種模式？",
+        options: [
+            "(A) 結構化教學 (TEACCH)",
+            "(B) 應用行為分析 (ABA)",
+            "(C) 感覺統合訓練",
+            "(D) 社會故事法"
+        ],
+        answer: "A",
+        explanation: "TEACCH (自閉症及相關溝通障礙兒童治療與教育計畫) 的核心精神是「結構化教學」。它運用自閉症學生優勢的「視覺提示」，將物理環境、作息時間與工作系統結構化，以降低其焦慮並提升獨立性。"
+    },
+    {
+        id: "106-33",
+        year: "106",
+        no: 33,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "國一學生在學習代數絕對值時，常直覺認為「 |-x| 一定是一個負數」，或者認為「因為有負號，所以 -x 比 x 小」。此迷思最主要的原因為何？",
+        options: [
+            "(A) 學生無法理解絕對值代表距離的幾何意義",
+            "(B) 學生將代數符號『x』直接視為正數，未能理解變數 x 本身也可以代表負數",
+            "(C) 學生未熟記負負得正的口訣",
+            "(D) 學生將絕對值與高斯符號混淆"
+        ],
+        answer: "B",
+        explanation: "學生常停留在算術階段，將英文字母 x 當作是具體的正數量。如果 x 本身是負數(例如 x = -5)，那麼 -x 其實是正數 5。未能將變數視為可正可負的泛化數值，是代數初學者最難跨越的障礙。"
+    },
+    {
+        id: "106-34",
+        year: "106",
+        no: 34,
+        category: "教育測驗與評量",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "在解釋學生的智力測驗分數時，教師向家長說明：「學生的得分是 100 分，但考慮到測驗的誤差範圍，他真正的智力大約落在 95 到 105 之間。」這個「誤差範圍」在測驗統計上稱之為何？",
+        options: [
+            "(A) 標準差 (Standard deviation)",
+            "(B) 測驗標準誤 (Standard error of measurement, SEM)",
+            "(C) 估計標準誤 (Standard error of estimate)",
+            "(D) 抽樣標準誤"
+        ],
+        answer: "B",
+        explanation: "測驗標準誤(SEM)是用來估計單一受試者「真實分數」可能落入的區間。它反映了測驗信度的高低(信度越高，標準誤越小)，能避免將學生的測驗得分視為絕對無誤的真實能力。"
+    },
+    {
+        id: "106-35",
+        year: "106",
+        no: 35,
+        category: "教育心理學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "卡芬頓(M. Covington)的「自我價值論」中，有些學生為了保護自尊，會刻意在上課時睡覺或不讀書，以便在考差時可以說「我只是沒讀，不是我笨」。這類學生被歸類為何種典型？",
+        options: [
+            "(A) 追求成功者",
+            "(B) 避免失敗者",
+            "(C) 接受失敗者",
+            "(D) 逃避失敗者 (Failure-avoiding)"
+        ],
+        answer: "D",
+        explanation: "自我價值論將學生分為四類。其中「逃避失敗者」為了維持「我很聰明」的自我價值感，寧可採用「不努力、拖延、找藉口」的防衛策略，讓失敗歸因於「未盡力」而非「能力差」。"
+    },
+    {
+        id: "106-36",
+        year: "106",
+        no: 36,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "在機率教學中，丟擲兩枚相同且公正的硬幣，學生常認為出現「兩正面」、「兩反面」、「一正一反」的機率各為 1/3。教師應如何導正此迷思？",
+        options: [
+            "(A) 告訴學生硬幣有重量偏差",
+            "(B) 說明古典機率必須建立在「樣本點發生機會均等」的前提下，引導學生列出 (正,正)、(正,反)、(反,正)、(反,反) 四種均等結果",
+            "(C) 放棄古典機率，直接改教條件機率",
+            "(D) 說明這屬於主觀機率，沒有標準答案"
+        ],
+        answer: "B",
+        explanation: "學生將「一正一反」視為一個單一結果，忽略了它其實包含 (正,反) 與 (反,正) 兩種排列方式。因此 (兩正, 兩反, 一正一反) 這三個事件發生的機會『並不均等』，不能直接作為古典機率的分母。"
+    },
+    {
+        id: "106-37",
+        year: "106",
+        no: 37,
+        category: "課程與教學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "布魯姆(B. Bloom)等人提出的認知領域教育目標分類，在 2001 年由安德森(Anderson)等人進行修訂。修訂後版本將認知歷程向度的最高層次訂為何者？",
+        options: [
+            "(A) 評鑑 (Evaluating)",
+            "(B) 應用 (Applying)",
+            "(C) 創造 (Creating)",
+            "(D) 分析 (Analyzing)"
+        ],
+        answer: "C",
+        explanation: "舊版 Bloom 分類由低至高為：知識、理解、應用、分析、綜合、評鑑。新版修改為動詞並調整順序：記憶、了解、應用、分析、評鑑，最高層次改為「創造」(Creating)。"
+    },
+    {
+        id: "106-38",
+        year: "106",
+        no: 38,
+        category: "教育社會學",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "華勒(W. Waller)在《教學社會學》一書中，從衝突論的觀點分析學校，認為師生關係本質上是基於強制力所建立的一種什麼樣的關係？",
+        options: [
+            "(A) 合作與共生的關係",
+            "(B) 制度化的支配與從屬關係",
+            "(C) 自由市場的買賣關係",
+            "(D) 專業與顧客的服務關係"
+        ],
+        answer: "B",
+        explanation: "華勒是最早以微觀衝突論視角探討班級社會學的學者。他認為學校是一個專制的組織，師生關係經常處於潛在的對立與衝突之中，是一種「制度化的支配(教師)與從屬(學生)」關係。"
+    },
+    {
+        id: "106-39",
+        year: "106",
+        no: 39,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "教師在教授三角形的「重心」時，除了證明它是三條中線的交點外，更會請學生用厚紙板剪出三角形並用筆尖頂住重心，讓三角形保持平衡。此教學結合了重心的何種幾何性質與物理意義？",
+        options: [
+            "(A) 重心到三頂點等距離",
+            "(B) 重心到三邊等距離",
+            "(C) 三中線將三角形面積平分為六個等面積的小三角形",
+            "(D) 重心是三角形內接圓的圓心"
+        ],
+        answer: "C",
+        explanation: "重心的物理意義是均質平面的質量中心。在數學幾何上，三條中線會將三角形平分成六塊「面積相等」的三角形。正因為面積(質量)在各個方向被均勻分配，重心才能成為物理上的平衡點。"
+    },
+    {
+        id: "106-40",
+        year: "106",
+        no: 40,
+        category: "輔導與諮商",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "針對學生嚴重的考試焦慮，輔導老師先教導學生肌肉放鬆技術，接著與學生共同編製「焦慮階層表」(從稍微緊張到極度恐懼的情境)，然後在放鬆狀態下逐級想像這些情境以消除恐懼。此治療法稱為？",
+        options: [
+            "(A) 嫌惡療法 (Aversion therapy)",
+            "(B) 系統減敏法 (Systematic desensitization)",
+            "(C) 洪水法 (Flooding)",
+            "(D) 代幣制度"
+        ],
+        answer: "B",
+        explanation: "系統減敏法(由 Wolpe 提出)是基於古典制約原理。利用「放鬆」與「焦慮」無法同時存在的特性（交互抑制），讓個體在放鬆狀態下逐步面對焦慮刺激，藉此削弱恐懼反應。"
+    },
+    {
+        id: "106-41",
+        year: "106",
+        no: 41,
+        category: "教育心理學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "依據訊息處理論(Information processing theory)，學生在聽課時，將剛接收到的新訊息與長期記憶中提取出的舊知識進行結合、運算與理解的暫時性心理運作空間，稱之為？",
+        options: [
+            "(A) 感覺記憶 (Sensory memory)",
+            "(B) 工作記憶 (Working memory / 短期記憶)",
+            "(C) 程序性記憶 (Procedural memory)",
+            "(D) 情節記憶 (Episodic memory)"
+        ],
+        answer: "B",
+        explanation: "工作記憶(或稱短期記憶)不僅是短暫儲存訊息的地方，更是心智處理的「工作台」(Workspace)。在這裡，大腦將外界輸入的訊息與長期記憶庫中的知識進行比對與編碼運算。"
+    },
+    {
+        id: "106-42",
+        year: "106",
+        no: 42,
+        category: "班級經營",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "班上學生亂丟垃圾，教師不採取打罵處罰，而是要求該學生負責將教室環境打掃乾淨。這符合德瑞克斯(R. Dreikurs)班級經營理論中的哪一種概念？",
+        options: [
+            "(A) 自然後果",
+            "(B) 邏輯後果 (Logical consequences)",
+            "(C) 負增強",
+            "(D) 隔離法"
+        ],
+        answer: "B",
+        explanation: "「邏輯後果」是由成人設計安排，與學生的不當行為有邏輯與合理關聯的結果(亂丟垃圾$\rightarrow$負責打掃)。這有別於自然發生的「自然後果」(不穿外套$\rightarrow$感冒)以及不具關聯性的「懲罰」(亂丟垃圾$\rightarrow$抄課文)。"
+    },
+    {
+        id: "106-43",
+        year: "106",
+        no: 43,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "國中生學習等差數列時，對於 $a_1, a_2, a_3$ 成等差，能直覺背出 $2a_2 = a_1 + a_3$ (等差中項)。教師為了深化此概念，通常會將其與哪一種統計指標的概念進行幾何或代數上的連結？",
+        options: [
+            "(A) 眾數",
+            "(B) 算術平均數",
+            "(C) 標準差",
+            "(D) 全距"
+        ],
+        answer: "B",
+        explanation: "等差中項 $a_2 = (a_1 + a_3) / 2$，在數學意義上就是首尾兩項的「算術平均數」。在數線上，$a_2$ 剛好位於 $a_1$ 與 $a_3$ 的正中央。這能將代數、統計與幾何概念完美連結。"
+    },
+    {
+        id: "106-44",
+        year: "106",
+        no: 44,
+        category: "教育測驗與評量",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "一份教學問卷採用「非常同意、同意、無意見、不同意、非常不同意」來調查學生的態度。這種量尺在測驗統計分類中，最基本屬於下列哪一種尺度？",
+        options: [
+            "(A) 名義尺度 (Nominal scale)",
+            "(B) 順序尺度 (Ordinal scale)",
+            "(C) 等距尺度 (Interval scale)",
+            "(D) 比率尺度 (Ratio scale)"
+        ],
+        answer: "B",
+        explanation: "李克特量表(Likert scale)的選項具有程度上的高低次序(非常同意大於同意)，因此具備「順序尺度」的特性。雖然在統計實務上常將其視為等距尺度來計算平均，但其本質無法證明「同意與無意見」的差距等於「無意見與不同意」的差距。"
+    },
+    {
+        id: "106-45",
+        year: "106",
+        no: 45,
+        category: "教育哲學",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "主張存在先於本質，強調個人擁有絕對的自由意志去選擇自己的人生，且必須為自己的選擇承擔完全責任的哲學思潮為？",
+        options: [
+            "(A) 結構主義 (Structuralism)",
+            "(B) 存在主義 (Existentialism)",
+            "(C) 實用主義 (Pragmatism)",
+            "(D) 理性主義"
+        ],
+        answer: "B",
+        explanation: "存在主義(如沙特 Sartre 所主張)認為，人類不像物品被製造前就有既定用途(本質)，而是先「存在」於世上，然後透過不斷的自由選擇與行動，來決定並創造自己的「本質」與生命意義。"
+    },
+    {
+        id: "106-46",
+        year: "106",
+        no: 46,
+        category: "數學教材教法",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "在國中幾何的「尺規作圖」單元中，教師告訴學生有三個著名的古希臘幾何問題是無法僅用「無刻度直尺」與「圓規」在有限步驟內完成的。下列何者『不』屬於這三大不可解問題？",
+        options: [
+            "(A) 化圓為方 (作一正方形，其面積等於一已知圓)",
+            "(B) 倍立方 (作一立方體，其體積為已知立方體的兩倍)",
+            "(C) 三等分任意角",
+            "(D) 作一已知線段的垂直平分線"
+        ],
+        answer: "D",
+        explanation: "作中垂線是尺規作圖的最基本能力之一(找兩圓交點連線)。古希臘三大幾何難題為：化圓為方、倍立方、三等分任意角。這三者後來在19世紀被近代代數學(伽羅瓦理論等)證明無法用規矩作圖完成。"
+    },
+    {
+        id: "106-47",
+        year: "106",
+        no: 47,
+        category: "課程與教學",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "艾斯納(E. Eisner)提出一種質性的課程評鑑方法，主張評鑑者應該像藝術評論家一樣，具備敏銳的洞察力來賞析教學的細微之處，並向大眾公開評論其價值。此評鑑法稱為？",
+        options: [
+            "(A) 教育鑑賞與教育批評 (Educational connoisseurship and criticism)",
+            "(B) 締造評鑑 (CIPP Model)",
+            "(C) 認可評鑑",
+            "(D) 差距評鑑模式"
+        ],
+        answer: "A",
+        explanation: "艾斯納反對將教育成果完全量化與科學化。他借用藝術領域的概念，提出「教育鑑賞」(內在的覺察與欣賞)與「教育批評」(外在的語言表達與評論)，強調質性的教學觀察與評量。"
+    },
+    {
+        id: "106-48",
+        year: "106",
+        no: 48,
+        category: "特殊教育",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "針對資優生，提供超出該年級原定課程進度的學習材料，例如讓國中一年級的資優生提早修習國中三年級甚至高中的數學課程。這種資優教育安置方式稱為？",
+        options: [
+            "(A) 充實制 (Enrichment)",
+            "(B) 區分性指導 (Differentiated instruction)",
+            "(C) 加速制 (Acceleration)",
+            "(D) 合作學習"
+        ],
+        answer: "C",
+        explanation: "資優教育的兩大策略為加速與充實。「加速制」是指加快學習進度(如跳級、提早修課)；「充實制」則是不改變進度與年級，但加深加廣學習的內容與難度(如做專題研究)。"
+    },
+    {
+        id: "106-49",
+        year: "106",
+        no: 49,
+        category: "數學教材教法",
+        frequencyLabel: "中",
+        frequencyValue: 2,
+        question: "在教授空間幾何時，學生常以為「空間中兩條直線如果沒有相交，就一定互相平行」。教師應引入哪一種空間獨有的直線關係來導正此平面幾何的侷限？",
+        options: [
+            "(A) 垂直",
+            "(B) 重合",
+            "(C) 歪斜線 (Skew lines)",
+            "(D) 漸近線"
+        ],
+        answer: "C",
+        explanation: "在二維平面上，兩直線不相交必定平行。但在三維空間中，存在著「既不相交，也不平行」(不在同一個平面上)的兩條直線，這在數學上稱為「歪斜線」(例如立體長方體中一條前緣水平線與一條側緣鉛直線)。"
+    },
+    {
+        id: "106-50",
+        year: "106",
+        no: 50,
+        category: "教育行政與法規",
+        frequencyLabel: "高",
+        frequencyValue: 3,
+        question: "依據我國《教師法》規定，為處理教師疑似不適任案件(如教學不力、體罰等)，各主管機關應設立專門的委員會，協助學校進行客觀專業的調查與輔導。此委員會全名為何？",
+        options: [
+            "(A) 教師申訴評議委員會",
+            "(B) 教師專業發展評鑑委員會",
+            "(C) 教師專業審查會 (專審會)",
+            "(D) 校園性別平等教育委員會"
+        ],
+        answer: "C",
+        explanation: "為解決學校內部教評會可能出現的「師師相護」或專業調查能力不足之問題，《教師法》修法後強化了「教師專業審查會(專審會)」的機制，由主管教育機關設立，介入處理不適任教師的調查與輔導。"
+    }
+    // 💡 系統提示：請將附件 112_110教育.txt 中的 110-112 年題目物件 { id: "112-01", ... } 接續貼在此處
+];
 
-        // 取得 DOM 元素
-        const container = document.getElementById('questionContainer');
-        const sortSelect = document.getElementById('sortSelect');
-        const filterSelect = document.getElementById('filterSelect');
-        const expandAllBtn = document.getElementById('expandAllBtn');
-        let allExpanded = false;
+let allExpanded = false;
 
-        // 渲染題庫函數
-        function renderQuestions() {
-            const sortMode = sortSelect.value;
-            const filterMode = filterSelect.value;
+// 渲染題目的函數
+function renderQuestions(data) {
+    const container = document.getElementById('questions-container');
+    container.innerHTML = '';
+    
+    // 更新總題數顯示
+    const countSpan = document.getElementById('total-count');
+    if (countSpan) countSpan.innerText = data.length;
 
-            // 1. 篩選
-            let filteredData = questionsData.filter(q => {
-                if (filterMode === 'all') return true;
-                return q.category === filterMode;
-            });
+    data.forEach((item, index) => {
+        // 頻率標籤顏色邏輯
+        let badgeColor = "bg-gray-100 text-gray-800";
+        if(item.frequencyValue === 3) badgeColor = "bg-red-100 text-red-700 border-red-200";
+        if(item.frequencyValue === 2) badgeColor = "bg-yellow-100 text-yellow-700 border-yellow-200";
+        if(item.frequencyValue === 1) badgeColor = "bg-green-100 text-green-700 border-green-200";
 
-            // 2. 排序
-            filteredData.sort((a, b) => {
-                if (sortMode === 'frequency') {
-                    // 頻率高到低，頻率相同則比年份新到舊，再比題號小到大
-                    if (b.frequencyValue !== a.frequencyValue) {
-                        return b.frequencyValue - a.frequencyValue;
-                    }
-                    if (b.year !== a.year) {
-                        return b.year - a.year;
-                    }
-                    return a.no - b.no;
-                } else if (sortMode === 'year') {
-                    // 年份新到舊，年份相同比題號小到大
-                    if (b.year !== a.year) {
-                        return b.year - a.year;
-                    }
-                    return a.no - b.no;
-                }
-            });
+        // 選項 HTML 組合
+        const optionsHtml = item.options.map(opt => 
+            `<div class="p-3 bg-gray-50 border border-gray-100 rounded-lg hover:bg-blue-50 transition">${opt}</div>`
+        ).join('');
 
-            // 3. 生成 HTML
-            container.innerHTML = '';
-            
-            if (filteredData.length === 0) {
-                container.innerHTML = '<div class="text-center p-8 text-gray-500 bg-white rounded-xl">找不到符合條件的題目。</div>';
-                return;
-            }
-
-            filteredData.forEach(q => {
-                // 決定頻率標籤顏色
-                let freqColor = 'bg-red-100 text-red-800 border-red-200';
-                if (q.frequencyValue === 2) freqColor = 'bg-yellow-100 text-yellow-800 border-yellow-200';
-                if (q.frequencyValue === 1) freqColor = 'bg-gray-100 text-gray-800 border-gray-200';
-
-                const card = document.createElement('div');
-                card.className = 'bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow';
-                card.innerHTML = `
-                    <div class="p-5 md:p-6">
-                        <div class="flex flex-wrap items-center gap-2 mb-4">
-                            <span class="px-2.5 py-1 bg-blue-600 text-white text-xs font-bold rounded">
-                                ${q.year} 年度
-                            </span>
-                            <span class="px-2.5 py-1 bg-gray-200 text-gray-700 text-xs font-semibold rounded">
-                                第 ${q.no} 題
-                            </span>
-                            <span class="px-2.5 py-1 border text-xs font-semibold rounded ${freqColor}">
-                                頻率: ${q.frequencyLabel}
-                            </span>
-                            <span class="px-2.5 py-1 bg-purple-100 text-purple-800 border border-purple-200 text-xs font-semibold rounded ml-auto">
-                                ${q.category}
-                            </span>
-                        </div>
-                        
-                        <h3 class="text-lg font-medium text-gray-900 mb-4 leading-relaxed">
-                            ${q.question}
-                        </h3>
-                        
-                        <div class="space-y-2 mb-4 ml-2">
-                            ${q.options.map(opt => `<div class="text-gray-700">${opt}</div>`).join('')}
-                        </div>
-                        
-                        <button onclick="toggleAnswer(${q.id})" class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center gap-1 transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                            <span id="btn-text-${q.id}">顯示解答與解析</span>
-                        </button>
-                        
-                        <div id="ans-${q.id}" class="answer-reveal">
-                            <div class="bg-blue-50 p-4 rounded-lg">
-                                <div class="font-bold text-blue-900 mb-1">正確答案：${q.answer}</div>
-                                <div class="text-blue-800 text-sm leading-relaxed">
-                                    <span class="font-semibold">解析：</span>${q.explanation}
-                                </div>
-                            </div>
-                        </div>
+        const cardHTML = `
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-600 text-white font-bold text-sm">
+                            ${item.no}
+                        </span>
+                        <span class="text-sm font-medium px-3 py-1 bg-gray-100 rounded-full text-gray-600">${item.category}</span>
                     </div>
-                `;
-                container.appendChild(card);
-            });
-            
-            // 如果當前狀態是全部展開，則讓新渲染的元素也展開
-            if (allExpanded) {
-                document.querySelectorAll('.answer-reveal').forEach(el => el.classList.add('show'));
-                document.querySelectorAll('[id^="btn-text-"]').forEach(el => el.innerText = '隱藏解答與解析');
-            }
-        }
+                    <span class="text-xs font-semibold px-2.5 py-1 rounded-md border ${badgeColor}">
+                        出題頻率：${item.frequencyLabel} (${item.frequencyValue})
+                    </span>
+                </div>
+                
+                <h3 class="text-lg font-semibold text-gray-800 mb-4 leading-relaxed">
+                    ${item.question}
+                </h3>
+                
+                <div class="space-y-2 mb-6">
+                    ${optionsHtml}
+                </div>
 
-        // 單題展開/隱藏邏輯
-        window.toggleAnswer = function(id) {
-            const ansDiv = document.getElementById(`ans-${id}`);
-            const btnText = document.getElementById(`btn-text-${id}`);
-            
-            if (ansDiv.classList.contains('show')) {
-                ansDiv.classList.remove('show');
-                btnText.innerText = '顯示解答與解析';
-            } else {
-                ansDiv.classList.add('show');
-                btnText.innerText = '隱藏解答與解析';
-            }
-        };
+                <div class="border-t border-gray-100 pt-4">
+                    <button onclick="toggleAnswer('ans-${item.id}', 'btn-text-${item.id}')" class="text-blue-600 hover:text-blue-800 font-medium text-sm flex items-center gap-2">
+                        <i class="fas fa-lightbulb"></i> <span id="btn-text-${item.id}">顯示解答與解析</span>
+                    </button>
+                    
+                    <div id="ans-${item.id}" class="answer-reveal bg-green-50 rounded-lg border border-green-100 px-4">
+                        <p class="font-bold text-green-800 mb-2 mt-2">正確解答：${item.answer}</p>
+                        <p class="text-green-900 text-sm leading-relaxed pb-4"><span class="font-bold">解析：</span>${item.explanation}</p>
+                    </div>
+                </div>
+            </div>
+        `;
+        container.innerHTML += cardHTML;
+    });
+}
 
-        // 全部展開/隱藏邏輯
+// 答案切換功能
+function toggleAnswer(id, btnId) {
+    const el = document.getElementById(id);
+    const btnText = document.getElementById(btnId);
+    if (el.classList.contains('show')) {
+        el.classList.remove('show');
+        btnText.innerText = '顯示解答與解析';
+    } else {
+        el.classList.add('show');
+        btnText.innerText = '隱藏解答與解析';
+    }
+}
+
+// 全部展開/隱藏邏輯
+document.addEventListener('DOMContentLoaded', () => {
+    const expandAllBtn = document.getElementById('expand-all-btn');
+    if (expandAllBtn) {
         expandAllBtn.addEventListener('click', () => {
             allExpanded = !allExpanded;
             const ansDivs = document.querySelectorAll('.answer-reveal');
@@ -2012,13 +5352,24 @@
                 expandAllBtn.classList.replace('text-gray-800', 'text-blue-700');
             }
         });
+    }
+});
 
-        // 綁定事件監聽
-        sortSelect.addEventListener('change', renderQuestions);
-        filterSelect.addEventListener('change', renderQuestions);
+// 分類篩選功能
+function filterCategory(category) {
+    if (category === 'all') {
+        renderQuestions(questionsData);
+    } else {
+        const filtered = questionsData.filter(q => q.category === category);
+        renderQuestions(filtered);
+    }
+}
 
-        // 初始化渲染
-        renderQuestions();
-    </script>
+// 初始化渲染
+window.onload = () => {
+    renderQuestions(questionsData);
+};
+</script>
+
 </body>
 </html>
